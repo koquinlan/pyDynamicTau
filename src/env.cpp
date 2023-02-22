@@ -1,4 +1,4 @@
-#include "./include/env.hpp"
+#include "env.hpp"
 
 void Environment::reset(){
     bf.init("parameters.txt");
