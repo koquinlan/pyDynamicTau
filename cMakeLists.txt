@@ -1,27 +1,95 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(dynTauEnv)
+project(dynTau)
 
+
+
+####  Find Torch and Eigen Libraries  ####
+if(NOT DEFINED ENV{LIBS})
+    message(FATAL_ERROR "Error: The LIBS environment variable is not set. Please set the LIBS environment variable to the path of the directory containing the required libraries.")
+endif()
+
+set(CMAKE_PREFIX_PATH $ENV{LIBS}\\libtorch)
+list(APPEND CMAKE_PREFIX_PATH $ENV{LIBS}\\eigen-3.3.9)
+message(STATUS "Prefix path set to ${CMAKE_PREFIX_PATH}")
+
+find_package(Torch REQUIRED)
+find_package(Eigen3 3.3 REQUIRED NO_MODULE)
+
+# The following code block is suggested to be used on Windows.
+# According to https://github.com/pytorch/pytorch/issues/25457,
+# the DLLs need to be copied to avoid memory errors.
+if(MSVC)
+  message(STATUS "Copying DLLs to avoid memory errors")
+  file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
+  add_custom_command(TARGET trainingDynamicTau
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${TORCH_DLLS}
+    $<TARGET_FILE_DIR:trainingDynamicTau>)
+endif(MSVC)
+
+
+
+####   Find Python Packages   ####
+find_package(Python3 3.7 EXACT COMPONENTS Interpreter NumPy Development REQUIRED)
+message(STATUS "Found Python version: ${Python3_VERSION}")
+message(STATUS "Interpreter Path: ${Python3_EXECUTABLE}")
+
+
+
+####   Set Compiler Settings   ####
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_RL_FLAGS} ${TORCH_CXX_FLAGS}")
+
+
+
+####   Find Necessary Files   ####
 # Add the include directory to the include path
-include_directories(./include)
+include_directories(./include ./rl_include ./murrayEx)
 
-# Add your source files here
 set(SOURCES 
     src/bayes.cpp 
     src/env.cpp 
     src/proc.cpp 
     src/spectrum.cpp
-    src/wrapper.cpp
 )
 
-# Build the DLL
-add_library(dynTauEnv SHARED ${SOURCES})
+set(HEADERS 
+    include/bayes.hpp
+    include/decs.hpp 
+    include/env.hpp 
+    include/proc.hpp  
+)
 
-# # Link any necessary libraries
-# target_link_libraries(dynTauEnv my_lib1 my_lib2)
+# set(MANUAL_HEADERS 
+#     src/matplotlibcpp.h
+# )
 
-# Install the DLL
-install(TARGETS dynTauEnv DESTINATION lib)
+set(RL_HEADERS 
+    include/Actor.hpp 
+    include/Network.hpp 
+    include/ReplayBuffer.hpp 
+    include/Util.hpp
+)
 
-# Install the header files
-install(DIRECTORY include/ DESTINATION include)
+
+
+
+
+
+
+
+
+#### DLL Version ####
+
+# # Build the DLL
+# add_library(dynTauEnv SHARED ${SOURCES})
+
+# # # Link any necessary libraries
+# # target_link_libraries(dynTauEnv my_lib1 my_lib2)
+
+# # Install the DLL
+# install(TARGETS dynTauEnv DESTINATION lib)
+
+# # Install the header files
+# install(DIRECTORY include/ DESTINATION include)

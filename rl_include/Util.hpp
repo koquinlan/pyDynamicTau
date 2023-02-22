@@ -4,7 +4,7 @@
 #include <torch/torch.h>
 #include <Eigen/Dense>
 
-#include "ReplayBuffer.hpp"
+#include "replayBuffer.hpp"
 
 template <int N>
 torch::Tensor toTensor(const Eigen::Matrix<double, N, 1>& v)

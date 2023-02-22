@@ -6,9 +6,9 @@
 #include <sstream>
 #include <iomanip>
 
-#include "Network.hpp"
-#include "ReplayBuffer.hpp"
-#include "Util.hpp"
+#include "network.hpp"
+#include "replayBuffer.hpp"
+#include "util.hpp"
 
 template <class State, int numAction>
 class Actor {

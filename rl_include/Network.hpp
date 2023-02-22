@@ -2,7 +2,7 @@
 
 #include <torch/torch.h>
 
-#include "Util.hpp"
+#include "util.hpp"
 
 struct NetworkImpl : torch ::nn::Module
 {

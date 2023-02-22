@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-#include "Lattice.hpp"
+#include "lattice.hpp"
 
 class Environment {
 
