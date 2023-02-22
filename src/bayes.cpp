@@ -1,4 +1,4 @@
-#include "./include/bayes.hpp"
+#include "bayes.hpp"
 
 /**
  * @brief Call initParams to initalize parameters and set the data to it's starting value
@@ -162,7 +162,7 @@ double BayesFactors::getReward() const{
 
 Feature BayesFactors::getState() const{
     Feature state;
-    std::copy(exclusionLine.begin() + startIndex, exclusionLine.end(), state);
+    state.assign(exclusionLine.begin() + startIndex, exclusionLine.end());
     return state;
 }
 

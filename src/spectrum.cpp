@@ -1,4 +1,4 @@
-#include "./include/proc.hpp"
+#include "proc.hpp"
 
 
 Spectrum::Spectrum(){

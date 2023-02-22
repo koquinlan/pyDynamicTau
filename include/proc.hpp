@@ -12,31 +12,6 @@
 
 #include "decs.hpp"
 
-class Processor {
-public:
-
-    std::vector<double> lineshapeWeights;
-
-    void generateLineshape(int lineshapeType, int freqRes);
-
-    std::vector<Spectrum> simulateRaw(std::vector<double> freqRange, int numSpectra=10, double centerFreq = 7e3, 
-                                      int injectAxion=0, double axionFreq = 7.003e3, double axionScaleFactor = 1, 
-                                      double gammaGain=1, double maxGain=40.0, double sigmaProc=0.15); 
-
-    std::vector<Spectrum> rawToProcessed(std::vector<Spectrum> rawSpectra);
-
-    std::vector<Spectrum> processedToRescaled(std::vector<Spectrum> processedSpectra);
-
-    combinedSpectrum combinedToGrand(combinedSpectrum combined, int rebinWidth=1);
-
-    std::vector<double> grandToBayes(combinedSpectrum grand, double axionMean);
-
-private:
-    double stdev(std::vector<double> v);
-};
-
-
-
 class Spectrum {
 public:
     std::vector<double> freqRange, powers, gain, SNR;
@@ -62,4 +37,29 @@ public:
     std::vector<int> numTraces;
 
     void addRescaledSpectrum(Spectrum rescaledSpectrum);
+};
+
+
+
+class Processor {
+public:
+
+    std::vector<double> lineshapeWeights;
+
+    void generateLineshape(int lineshapeType, int freqRes);
+
+    std::vector<Spectrum> simulateRaw(std::vector<double> freqRange, int numSpectra, double centerFreq, 
+                                      int injectAxion, double axionFreq, double axionScaleFactor, 
+                                      double gammaGain, double maxGain, double sigmaProc); 
+
+    std::vector<Spectrum> rawToProcessed(std::vector<Spectrum> rawSpectra);
+
+    std::vector<Spectrum> processedToRescaled(std::vector<Spectrum> processedSpectra);
+
+    combinedSpectrum combinedToGrand(combinedSpectrum combined, int rebinWidth);
+
+    std::vector<double> grandToBayes(combinedSpectrum grand, double axionMean);
+
+private:
+    double stdev(std::vector<double> v);
 };
