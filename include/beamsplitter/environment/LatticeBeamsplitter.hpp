@@ -12,14 +12,13 @@ const int nState = 7;
 const double maxP = 6;
 typedef Eigen::Matrix<double, nState, 1> Feature;
 
-class Lattice {
+class LatticeBeamsplitter {
 
   const double V0 = 5;
   Eigen::VectorXd p;
   Eigen::MatrixXd H0;
   Eigen::MatrixXcd H1;
   Eigen::MatrixXcd H2;
-  Eigen::VectorXcd w;
   Eigen::MatrixXcd v;
 
   Eigen::VectorXcd psi;
@@ -27,7 +26,7 @@ class Lattice {
 
 public:
 
-  Lattice()
+  LatticeBeamsplitter()
   {
     p = Eigen::VectorXd::LinSpaced(nState, -maxP, maxP);
     H0 = (p.array().square() / 2).matrix().asDiagonal();
@@ -42,7 +41,6 @@ public:
     H2.block(1, 0, nState - 1, nState - 1) += V0 / 4
       * Eigen::MatrixXcd::Identity(nState - 1, nState - 1);
     Eigen::SelfAdjointEigenSolver<Eigen::MatrixXcd> eigensolver(H0 - H2);
-    w = eigensolver.eigenvalues();
     v = eigensolver.eigenvectors();
     psi = v.col(0);
     target = v.col(3);
@@ -53,12 +51,12 @@ public:
     psi = v.col(0);
   }
 
-  double fidelity() const
+  [[nodiscard]] double fidelity() const
   {
     return (psi.adjoint() * target).squaredNorm();
   }
 
-  Feature feature() const
+  [[nodiscard]] Feature feature() const
   {
     Eigen::VectorXcd result(psi);
 

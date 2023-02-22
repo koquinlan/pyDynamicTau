@@ -4,7 +4,7 @@
 #include <torch/torch.h>
 #include <Eigen/Dense>
 
-#include "replayBuffer.hpp"
+#include "ReplayBuffer.hpp"
 
 template <int N>
 torch::Tensor toTensor(const Eigen::Matrix<double, N, 1>& v)
@@ -59,23 +59,3 @@ std::vector<double> toVector(const torch::Tensor& t)
   return std::vector<double>(tmp.data_ptr<double>(), tmp.data_ptr<double>()
     + tmp.numel());
 }
-
-double epsilonByProportion(const double p)
-{
-  static constexpr double epsilonStart = 1.0;
-  static constexpr double epsilonFinal = 0.01;
-  static constexpr double epsilonDecay = 0.2;
-//  static constexpr double epsilonDecay = 0.0001;
-//  static constexpr int episodes = 20000;
-//  static constexpr double epsilonMin = 0.01;
-
-//  double epsilon = 0.2 - epsilonDecay * p *episodes;
-//  if (epsilon < epsilonMin)
-//    epsilon = epsilonMin;
-//  return epsilon;
-
-  return epsilonFinal + (epsilonStart - epsilonFinal) 
-    * exp(-p / epsilonDecay);
-}
-
-
