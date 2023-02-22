@@ -1,0 +1,27 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(dynTauEnv)
+
+# Add the include directory to the include path
+include_directories(./include)
+
+# Add your source files here
+set(SOURCES 
+    src/bayes.cpp 
+    src/env.cpp 
+    src/proc.cpp 
+    src/spectrum.cpp
+    src/wrapper.cpp
+)
+
+# Build the DLL
+add_library(dynTauEnv SHARED ${SOURCES})
+
+# # Link any necessary libraries
+# target_link_libraries(dynTauEnv my_lib1 my_lib2)
+
+# Install the DLL
+install(TARGETS dynTauEnv DESTINATION lib)
+
+# Install the header files
+install(DIRECTORY include/ DESTINATION include)
