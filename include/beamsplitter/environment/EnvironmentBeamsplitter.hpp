@@ -3,7 +3,7 @@
 #include <cmath>
 
 #include "LatticeBeamsplitter.hpp"
-#include "learner/reinforcement_learner/Environment.hpp"
+#include "learner/reinforcement_learner/environment.hpp"
 
 struct EnvironmentBeamsplitterConfiguration {
     int maxSteps = 20;

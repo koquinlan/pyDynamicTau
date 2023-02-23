@@ -32,69 +32,17 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_RL_FLAGS} ${TORCH_CXX_FLAGS}")
 
 ####   Find Necessary Files   ####
 # Add the include directory to the include path
-include_directories(./include ./rl_include ./murrayEx)
-
-set(SOURCES 
-    src/bayes.cpp 
-    src/env.cpp 
-    src/proc.cpp 
-    src/spectrum.cpp
-)
-
-set(DYN_HEADERS 
-    include/bayes.hpp
-    include/decs.hpp 
-    include/env.hpp 
-    include/proc.hpp  
-)
+include_directories(include)
 
 # set(MANUAL_HEADERS 
 #     src/matplotlibcpp.h
 # )
 
-set(LATTICE_HEADERS 
-    murrayEx/lattice.hpp 
-    murrayEx/environment.hpp 
-)
-
-set(RL_HEADERS 
-    rl_include/actor.hpp 
-    rl_include/network.hpp 
-    rl_include/replayBuffer.hpp 
-    rl_include/util.hpp
-)
 
 
-
-####   Create Executables   ###
-add_executable(latticeTest murrayEx/beamsplitter.cpp ${LATTICE_HEADERS} ${RL_HEADERS})
-target_link_libraries(latticeTest PRIVATE ${TORCH_LIBRARIES} Eigen3::Eigen)
-
-add_executable(trainingDynamicTau src/training.cpp ${SOURCES} ${DYN_HEADERS} ${RL_HEADERS})
-target_link_libraries(trainingDynamicTau PRIVATE ${TORCH_LIBRARIES} Eigen3::Eigen)
-
-
-
-# The following code block is suggested to be used on Windows.
-# According to https://github.com/pytorch/pytorch/issues/25457,
-# the DLLs need to be copied to avoid memory errors.
-if(MSVC)
-    message(STATUS "Copying DLLs to avoid memory errors")
-    file(GLOB TORCH_DLLS "${TORCH_INSTALL_PREFIX}/lib/*.dll")
-    add_custom_command(TARGET trainingDynamicTau
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${TORCH_DLLS}
-        $<TARGET_FILE_DIR:trainingDynamicTau>
-    )
-
-    add_custom_command(TARGET latticeTest
-        POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        ${TORCH_DLLS}
-        $<TARGET_FILE_DIR:latticeTest>
-    )
-endif(MSVC)
+####   Find all Subdirectories   ###
+add_subdirectory(src/beamsplitter)
+add_subdirectory(src/dynamicTau)
 
 
 

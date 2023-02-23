@@ -4,7 +4,7 @@
 #include "../episode_runner/EpisodeRunner.hpp"
 #include "../Cacher.hpp"
 #include "TrialResult.hpp"
-#include "../../utilities.hpp"
+#include "../../learnerUtil.hpp"
 
 static const int UNINITIALIZED_FIDELITY = -1;
 static TrialResult UNINITIALIZED_TRIAL_RESULT = TrialResult{UNINITIALIZED_FIDELITY, std::vector<int>{}, 0.0};

@@ -1,4 +1,4 @@
-#include "bayes.hpp"
+#include "dynamicTau/environment/bayes.hpp"
 
 /**
  * @brief Call initParams to initalize parameters and set the data to it's starting value

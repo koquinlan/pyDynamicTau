@@ -1,4 +1,4 @@
-#include "proc.hpp"
+#include "dynamicTau/environment/proc.hpp"
 
 
 Spectrum::Spectrum(){
