@@ -32,7 +32,7 @@ class ActorDynTau : Actor<Feature> {
       generator = new std::minstd_rand(seed);
       torch::set_default_dtype(torch::scalarTypeToTypeMeta(torch::kDouble));
 
-      dqn = Network(7, numHidden, EnvironmentDynTau::numberOfPossibleActions);
+      dqn = Network(Feature().size(), numHidden, EnvironmentDynTau::numberOfPossibleActions);
       dqn->initializeParameters();
       tdOptimizer = new torch::optim::Adam(dqn->parameters(),
                                            torch::optim::AdamOptions(learningRate));

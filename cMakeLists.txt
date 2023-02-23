@@ -26,7 +26,11 @@ message(STATUS "Interpreter Path: ${Python3_EXECUTABLE}")
 
 
 ####   Set Compiler Settings   ####
-set(CMAKE_CXX_FLAGS "/MDd")
+# if(CMAKE_BUILD_TYPE EQUAL "Debug")
+#     set(CMAKE_CXX_FLAGS "/MDd")
+# else()
+#     set(CMAKE_CXX_FLAGS "/MD")
+# endif()
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_RL_FLAGS} ${TORCH_CXX_FLAGS}")
 message(STATUS "Compiler flags set to: ${CMAKE_CXX_FLAGS}")

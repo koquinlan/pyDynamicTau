@@ -162,7 +162,12 @@ double BayesFactors::getReward() const{
 
 Feature BayesFactors::getState() const{
     Feature state;
-    state.assign(exclusionLine.begin() + startIndex, exclusionLine.end());
+
+    if (exclusionLine.size() < state.size()) {
+        throw std::invalid_argument("Exclusion line is smaller than input size.");
+    }
+
+    std::copy(exclusionLine.end() - state.size(), exclusionLine.end(), state.begin());
     return state;
 }
 

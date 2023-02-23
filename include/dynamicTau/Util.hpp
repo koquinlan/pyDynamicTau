@@ -13,6 +13,13 @@ torch::Tensor toTensor(const Eigen::Matrix<double, N, 1>& v)
     {N}).clone();
 }
 
+template <int N>
+torch::Tensor toTensor(const std::array<double, N>& v)
+{
+  return torch::from_blob(const_cast<double*>(v.data()), {N}).clone();
+}
+
+
 template <class Feature>
 torch::Tensor toTensor(const std::vector<Feature>& v)
 {

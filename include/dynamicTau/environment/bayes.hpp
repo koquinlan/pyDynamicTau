@@ -14,7 +14,8 @@
 
 #include "proc.hpp"
 
-typedef std::vector<double> Feature;
+const int inputSize = 501;
+typedef std::array<double, inputSize> Feature;
 
 /**
  * @brief Wrapper class to simulate, manipulate and store simulated scanning data. Contains functionality to calculate either an 
