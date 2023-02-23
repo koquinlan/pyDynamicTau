@@ -26,6 +26,8 @@ message(STATUS "Interpreter Path: ${Python3_EXECUTABLE}")
 
 
 ####   Set Compiler Settings   ####
+set(CMAKE_CXX_FLAGS "/MDd")
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_RL_FLAGS} ${TORCH_CXX_FLAGS}")
 
 
