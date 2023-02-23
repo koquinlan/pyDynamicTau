@@ -24,4 +24,13 @@ if(MSVC)
         ${TORCH_DLLS}
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
     )
+
+    message(STATUS "Copying Parameter File")
+    file(GLOB PARAMETER_FILE "parameters.txt")
+    add_custom_command(TARGET ${PROJECT_NAME}
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${PARAMETER_FILE}
+        $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
 endif(MSVC)

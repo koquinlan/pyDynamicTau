@@ -27,7 +27,11 @@ public:
 
 	explicit EnvironmentDynTau(EnvironmentDynTauConfiguration configuration = EnvironmentDynTauConfiguration{}) :
 		configuration(configuration),
-		timestep(configuration.maxTime / configuration.maxSteps) {}
+		timestep(configuration.maxTime / configuration.maxSteps), 
+		bf()
+		{
+			bf.init("parameters.txt");
+		}
 
 
 	void reset() override{
