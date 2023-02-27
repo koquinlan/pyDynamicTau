@@ -4,8 +4,8 @@ gammaGain=1
 
 # Axion generation parameters (freq in MHz)
 gGammaSim=0.1
-axionFreq=7000
-axionBool=0
+axionFreq=6999.5
+axionBool=1
 
 # Scanning Parameters (center and step in MHz, resolution in Hz)
 sigmaProc=0.1
@@ -20,7 +20,7 @@ freqWindowSize=5000000
 freqRes=100
 
 # Reward Parameters
-targetCoupling=0.03
+targetCoupling=0.08
 
 #Tanh Reward
 peakReward=60

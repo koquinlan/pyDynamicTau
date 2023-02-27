@@ -19,7 +19,7 @@ int main(){
 
     // Initialize an instance of the BayesFactors class
     BayesFactors bf;
-    bf.init("../parameters.txt");
+    bf.init("parameters.txt");
 
     // Loop until the user chooses to exit
     while(true){
@@ -46,10 +46,6 @@ int main(){
 
         plt::plot(vecState);
 
-        // plt::subplot(2, 1, 1);
-        // plt::plot(bf.fullFreqRange, bf.exclusionLine);
-
-        // plt::subplot(2, 1, 2);
         // plt::plot(bf.fullFreqRange, bf.exclusionLine);
 
         plt::show();
