@@ -43,7 +43,7 @@ void BayesFactors::init(const std::string& parametersFile){
     rewardStartIndex = (freqRange.size()-1)/2;
     rewardEndIndex = rewardStartIndex+scanningWindowSize*(1e6)/freqRes;
 
-    reward = (rewardEndIndex-rewardStartIndex+1)*belowThresholdValue;
+    reward = 0;
 }
 
 
@@ -160,15 +160,72 @@ double BayesFactors::getReward() const{
     return reward;
 }
 
+
+
 Feature BayesFactors::getState() const{
     Feature state;
 
     if (exclusionLine.size() < state.size()) {
-        throw std::invalid_argument("Exclusion line is smaller than input size.");
+        std::cout << ("Exclusion line is smaller than input size.") << std::endl;
+    }
+    else if (exclusionLine.size() > state.size()) {
+        state = windowAverage(exclusionLine, state.size());
+    }
+    else{
+        std::copy(exclusionLine.end() - state.size(), exclusionLine.end(), state.begin());
+    }
+    
+    return state;
+}
+
+
+
+Feature BayesFactors::windowAverage(const std::vector<double>& input, int outputSize) const{
+    Feature output;
+
+    // Calculate the size of each "bin"
+    int binSize = input.size() / outputSize;
+    int remainder = input.size() % outputSize;
+
+    // Loop over each bin
+    for (int i = 0; i < outputSize-1; i++)
+    {
+        // Calculate the start and end indices of the current bin
+        int windowStartIndex = i * binSize;
+        int windowEndIndex = windowStartIndex + binSize;
+
+        // Calculate the sum of the elements in the current bin
+        double sum = 0.0;
+        for (int j = windowStartIndex; j < windowEndIndex; j++)
+        {
+            sum += input[j];
+        }
+
+        // Calculate the average of the elements in the current bin
+        double average = sum / binSize;
+
+        // Add the average to the output vector
+        output[i] = average;
     }
 
-    std::copy(exclusionLine.end() - state.size(), exclusionLine.end(), state.begin());
-    return state;
+    // Calculate the start and end indices of the last bin
+    int windowStartIndex = (outputSize - 1) * binSize;
+    int windowEndIndex = input.size();
+
+    // Calculate the sum of the elements in the last bin
+    double sum = 0.0;
+    for (int j = windowStartIndex; j < windowEndIndex; j++)
+    {
+        sum += input[j];
+    }
+
+    // Calculate the average of the elements in the last bin
+    double average = sum / (binSize + remainder);
+
+    // Add the average to the output vector
+    output[outputSize - 1] = average;
+
+    return output;
 }
 
 

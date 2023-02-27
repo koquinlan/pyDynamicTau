@@ -4,22 +4,23 @@ gammaGain=1
 
 # Axion generation parameters (freq in MHz)
 gGammaSim=0.1
-axionFreq=7e3+1
+axionFreq=7000
 axionBool=0
 
 # Scanning Parameters (center and step in MHz, resolution in Hz)
-sigmaProc=0.2
+sigmaProc=0.1
+nSpectra=10
 centerFreq=6999
 tuningStepFreq=0.1
 scanningWindowSize=1
-nSpectra=10
+
 
 # If changing this freq res or window size, also need to change the input layer size in bayes.hpp
 freqWindowSize=5000000
-freqRes=10000
+freqRes=100
 
 # Reward Parameters
-targetCoupling=0.02
+targetCoupling=0.03
 
 #Tanh Reward
 peakReward=60

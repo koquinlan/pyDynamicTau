@@ -81,4 +81,6 @@ class BayesFactors{
     void updateExclusionLine(combinedSpectrum combined);
     void updateReward(double oldStrength, double newStrength);
     double rewardFunction(double excludedCoupling);
+
+    Feature windowAverage(const std::vector<double>& input, int outputSize) const;
 };
