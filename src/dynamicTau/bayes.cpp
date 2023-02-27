@@ -33,7 +33,7 @@ void BayesFactors::init(const std::string& parametersFile){
         aggregateUpdate.push_back(1);
 
         // Set mechanics for exclusion line calc
-        exclusionLine.push_back(DBL_MAX);
+        exclusionLine.push_back(100);
         coeffSumA.push_back(0);
         coeffSumB.push_back(0);
     }
@@ -42,8 +42,6 @@ void BayesFactors::init(const std::string& parametersFile){
     double endFreq = centerFreq+scanningWindowSize;
     rewardStartIndex = (freqRange.size()-1)/2;
     rewardEndIndex = rewardStartIndex+scanningWindowSize*(1e6)/freqRes;
-
-    reward = 0;
 }
 
 
@@ -147,6 +145,7 @@ void BayesFactors::step(int stepForward){
 
     updateBayes(combined);
     updateExclusionLine(combined);
+    updateState();
 }
 
 
@@ -157,29 +156,122 @@ void BayesFactors::step(int stepForward){
  * @return double reward
  */
 double BayesFactors::getReward() const{
+    double reward=0;
+
+    std::vector<double> fullWindow(exclusionLine.begin()+rewardStartIndex, exclusionLine.begin()+rewardEndIndex);
+
+    Feature fullState = windowMax(fullWindow, state.size());
+
+    for (int i=0; i<fullState.size(); i++){
+        reward += rewardFunction(fullState[i]);
+    }
+
     return reward;
+
+}
+
+
+
+void BayesFactors::updateState(){
+    std::vector<double> activeWindow(exclusionLine.begin()+startIndex, exclusionLine.end());
+
+    if (activeWindow.size() < state.size()) {
+        std::cout << ("Exclusion line is smaller than input size.") << std::endl;
+    }
+    else if (activeWindow.size() > state.size()) {
+        state = windowMax(activeWindow, state.size());
+    }
+    else{
+        std::copy(activeWindow.end() - state.size(), activeWindow.end(), state.begin());
+    }
 }
 
 
 
 Feature BayesFactors::getState() const{
-    Feature state;
-
-    if (exclusionLine.size() < state.size()) {
-        std::cout << ("Exclusion line is smaller than input size.") << std::endl;
-    }
-    else if (exclusionLine.size() > state.size()) {
-        state = windowAverage(exclusionLine, state.size());
-    }
-    else{
-        std::copy(exclusionLine.end() - state.size(), exclusionLine.end(), state.begin());
-    }
-    
     return state;
 }
 
 
 
+/**
+ * @brief Calculates the reward for whatever the current state is (usually the max in a binned version of the active scanning window)
+ * 
+ * @return double Reward for the current state
+ */
+double BayesFactors::getScore() const{
+    double score = 0;
+
+    for (int i=0; i<state.size(); i++){
+        score += rewardFunction(state[i]);
+    }
+
+    return score;
+}
+
+
+
+/**
+ * @brief Iterates over the input vector and takes the max in each bin to produce an output Feature of size ouputSize
+ * 
+ * @param input Input vector to window max
+ * @param outputSize Size for window maxed output
+ * @return Feature Array of the max in each window of the input
+ */
+Feature BayesFactors::windowMax(const std::vector<double>& input, int outputSize) const{
+    Feature output;
+
+    // Calculate the size of each "bin"
+    int binSize = input.size() / outputSize;
+
+    // Loop over each bin
+    for (int i = 0; i < outputSize-1; i++)
+    {
+        // Calculate the start and end indices of the current bin
+        int windowStartIndex = i * binSize;
+        int windowEndIndex = windowStartIndex + binSize;
+
+        // Calculate the sum of the elements in the current bin
+        double max = 0.0;
+        for (int j = windowStartIndex; j < windowEndIndex; j++)
+        {
+            if (max < input[j]){
+                max = input[j];
+            }
+        }
+
+        // Add the max to the output vector
+        output[i] = max;
+    }
+
+    // Calculate the start and end indices of the last bin
+    int windowStartIndex = (outputSize - 1) * binSize;
+    int windowEndIndex = input.size();
+
+    // Calculate the sum of the elements in the last bin
+    double max = 0.0;
+    for (int j = windowStartIndex; j < windowEndIndex; j++)
+    {
+        if (max < input[j]){
+            max = input[j];
+        }
+    }
+
+    // Add the max to the output vector
+    output[outputSize - 1] = max;
+
+    return output;
+}
+
+
+
+/**
+ * @brief Iterates over the input vector and takes the average in each bin to produce an output Feature of size ouputSize
+ * 
+ * @param input Input vector to window average
+ * @param outputSize Size for window averaged output
+ * @return Feature Array of the average in each window of the input
+ */
 Feature BayesFactors::windowAverage(const std::vector<double>& input, int outputSize) const{
     Feature output;
 
@@ -251,23 +343,8 @@ void BayesFactors::updateExclusionLine(combinedSpectrum combined){
 
         newExcludedStrength = (coeffB+sqrt(pow(coeffB,2)+fourLnPtOne*coeffA))/(2*coeffA);
 
-        updateReward(exclusionLine[startIndex+i], newExcludedStrength);
-
         exclusionLine[startIndex+i] = newExcludedStrength;
     }
-}
-
-
-
-/**
- * @brief Calculate the update to the reward based on the change in excluded coupling strength compared to the target
- * 
- * @param oldStrength Old coupling strength at 90% exclusion
- * @param newStrength New coupling strength at 90% exclusion
- */
-void BayesFactors::updateReward(double oldStrength, double newStrength){ 
-
-    reward += rewardFunction(newStrength) - rewardFunction(oldStrength);
 }
 
 
@@ -278,7 +355,7 @@ void BayesFactors::updateReward(double oldStrength, double newStrength){
  * @param exclusionStrength 
  * @return double 
  */
-double BayesFactors::rewardFunction(double excludedCoupling){
+double BayesFactors::rewardFunction(double excludedCoupling) const{
 
     return 1/(std::abs(std::tanh(peakSharpness*(excludedCoupling-targetCoupling)))+(1/peakReward));
 }

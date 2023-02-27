@@ -50,7 +50,7 @@ public:
 	}
 
   	double score() const override{
-		return bf.getReward();
+		return bf.getScore();
 	}
 
 	double reward() const override{

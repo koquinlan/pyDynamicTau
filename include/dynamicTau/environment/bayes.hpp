@@ -46,7 +46,6 @@ class BayesFactors{
     double belowThresholdValue, aboveThresholdValue, stepPunish;
     // Tanh reward
     double peakSharpness, peakReward;
-    double reward;
     
 
     // Axion generation options
@@ -67,11 +66,14 @@ class BayesFactors{
     void init(const std::string& parametersFile);
     void step(int stepForward);
 
-    double getReward() const;
     Feature getState() const;
+    double getReward() const;
+    double getScore() const;
 
     
     private:
+
+    Feature state;
 
     void initParams(const std::string& parametersFile);
 
@@ -79,8 +81,9 @@ class BayesFactors{
 
     void updateBayes(combinedSpectrum combined);
     void updateExclusionLine(combinedSpectrum combined);
-    void updateReward(double oldStrength, double newStrength);
-    double rewardFunction(double excludedCoupling);
+    void updateState();
+    double rewardFunction(double excludedCoupling) const;
 
     Feature windowAverage(const std::vector<double>& input, int outputSize) const;
+    Feature windowMax(const std::vector<double>& input, int outputSize) const;
 };
