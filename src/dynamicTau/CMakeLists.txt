@@ -1,12 +1,17 @@
 project(dynTau)
 
-set(SOURCES 
-    bayes.cpp 
-    proc.cpp 
+set(SOURCES
+    bayes.cpp
+    proc.cpp
     spectrum.cpp
 )
 
 include_directories(include)
+
+add_executable(${PROJECT_NAME}Manual manual.cpp ${SOURCES})
+set_property(TARGET ${PROJECT_NAME}Manual PROPERTY CXX_STANDARD 17)
+target_include_directories(${PROJECT_NAME}Manual PRIVATE ${Python3_INCLUDE_DIRS} ${Python3_NumPy_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME}Manual PRIVATE ${Python3_LIBRARIES} Python3::NumPy)
 
 add_executable(${PROJECT_NAME} training.cpp ${SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 17)
@@ -32,5 +37,14 @@ if(MSVC)
         COMMAND ${CMAKE_COMMAND} -E copy_if_different
         ${PARAMETER_FILE}
         $<TARGET_FILE_DIR:${PROJECT_NAME}>
+    )
+
+    message(STATUS "Copying Parameter File to manual build")
+    file(GLOB PARAMETER_FILE "parameters.txt")
+    add_custom_command(TARGET ${PROJECT_NAME}Manual
+        POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${PARAMETER_FILE}
+        $<TARGET_FILE_DIR:${PROJECT_NAME}Manual>
     )
 endif(MSVC)
