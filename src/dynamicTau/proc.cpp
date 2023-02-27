@@ -74,7 +74,7 @@ std::vector<Spectrum> Processor::simulateRaw(std::vector<double> freqRange, int 
     // Loop through frequency generating a lorentzian gain profile and corresponding SNR
     // (could probably move this to a seperate func and pass it in as an arg to save time)
     for(int i=0; i<freqRange.size(); i++){
-        fakeGain[i] = (maxGain*gammaGain*M_PI_2)*(M_1_PI)*(0.5*gammaGain)/(pow(freqRange[i],2)+pow(gammaGain/2,2));
+        fakeGain[i] = (maxGain*gammaGain*M_PI_2)*(M_1_PI)*(0.5*gammaGain)/(freqRange[i]*freqRange[i]+gammaGain/2*gammaGain/2);
         fakeSNR[i] = fakeGain[i]/(1+fakeGain[i]);
     }
 
@@ -191,7 +191,7 @@ combinedSpectrum Processor::combinedToGrand(combinedSpectrum combined, int rebin
                 newSigma += (lineshapeWeights[j]*lineshapeWeights[j])/(combined.sigmaCombined[i+j]*combined.sigmaCombined[i+j]);
                 newPower += lineshapeWeights[j]*combined.powers[i+j]/(combined.sigmaCombined[i+j]*combined.sigmaCombined[i+j]*grandWidth);
             }
-            newSigma = grandWidth/pow(newSigma,0.5);
+            newSigma = grandWidth/std::sqrt(newSigma);
             newPower *= newSigma*newSigma;
 
             grandSigmas.push_back(newSigma);

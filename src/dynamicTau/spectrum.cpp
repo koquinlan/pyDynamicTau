@@ -56,8 +56,8 @@ void combinedSpectrum::addRescaledSpectrum(Spectrum rescaledSpectrum)
         freqRange = trueRescaledRange;
         powers = rescaledSpectrum.powers;
         for(int i=0; i<rescaledSpectrum.SNR.size(); i++){
-            sigmaCombined.push_back(pow(pow(rescaledSpectrum.SNR[i],2),-0.5));
-            weightSum.push_back(pow(rescaledSpectrum.SNR[i],2));
+            sigmaCombined.push_back(rescaledSpectrum.SNR[i]);
+            weightSum.push_back(rescaledSpectrum.SNR[i]*rescaledSpectrum.SNR[i]);
             numTraces.push_back(1);
         }
     }
@@ -125,12 +125,12 @@ void combinedSpectrum::addRescaledSpectrum(Spectrum rescaledSpectrum)
 
             // Add SNR (R_ij) squared to the sum
             oldSum = weightSum[i+fullRangeIndex];
-            newSNRsq = pow(rescaledSpectrum.SNR[i],2);
+            newSNRsq = rescaledSpectrum.SNR[i]*rescaledSpectrum.SNR[i];
             newSum = oldSum+newSNRsq;
 
             // Update the sum normalization term and sigma in each bin
             weightSum[i+fullRangeIndex] = newSum;
-            sigmaCombined[i+fullRangeIndex] = pow(1/newSum,0.5);
+            sigmaCombined[i+fullRangeIndex] = std::sqrt(1/newSum);
 
             // Update the powers based on the reweighted contrubting traces
             powers[i+fullRangeIndex] *= (oldSum/newSum);

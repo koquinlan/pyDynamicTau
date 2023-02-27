@@ -336,13 +336,13 @@ void BayesFactors::updateExclusionLine(combinedSpectrum combined){
     for(int i=0; i<combined.powers.size(); i++){
         scanFactor = (1/sigmaProc)*sqrt(combined.weightSum[i]);
 
-        coeffSumA[startIndex+i] += pow(scanFactor,2)/2;
+        coeffSumA[startIndex+i] += scanFactor*scanFactor/2;
         coeffSumB[startIndex+i] += scanFactor*combined.powers[i]/combined.sigmaCombined[i];
 
         coeffA = coeffSumA[startIndex+i];
         coeffB = coeffSumB[startIndex+i];
 
-        newExcludedStrength = (coeffB+sqrt(pow(coeffB,2)+fourLnPtOne*coeffA))/(2*coeffA);
+        newExcludedStrength = (coeffB+std::sqrt(coeffB*coeffB+fourLnPtOne*coeffA))/(2*coeffA);
 
         exclusionLine[startIndex+i] = newExcludedStrength;
     }
@@ -374,7 +374,7 @@ void BayesFactors::updateBayes(combinedSpectrum combined){
 
     for(int i=0; i<combined.powers.size(); i++){
         expectedMean = gGammaFactors*(1/sigmaProc)*sqrt(combined.weightSum[i]);
-        factor = exp(expectedMean*combined.powers[i]/combined.sigmaCombined[i]-pow(expectedMean,2)/2);
+        factor = exp(expectedMean*combined.powers[i]/combined.sigmaCombined[i]-expectedMean*expectedMean/2);
 
         aggregateUpdate[startIndex+i] *= factor;
     }
