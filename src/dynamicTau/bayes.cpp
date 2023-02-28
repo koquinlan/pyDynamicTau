@@ -164,7 +164,7 @@ double BayesFactors::getReward() const{
         Feature fullState = windowMax(fullWindow, state.size());
 
         for (int i=0; i<fullState.size(); i++){
-            reward += rewardFunction(fullState[i]);
+            reward += rewardFunction(fullState[i])/peakReward;
         }
     }
 
@@ -204,7 +204,7 @@ double BayesFactors::getScore() const{
     double score = 0;
 
     for (int i=0; i<state.size(); i++){
-        score += rewardFunction(state[i]);
+        score += rewardFunction(state[i])/peakReward;
     }
 
     return score;
