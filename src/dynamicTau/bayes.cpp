@@ -190,7 +190,14 @@ void BayesFactors::updateState(){
 
 
 Feature BayesFactors::getState() const{
-    return state;
+    Feature normState;
+
+    // Normalize exclusions to target coupling
+    for (int i=0; i<state.size(); i++){
+        normState[i] = state[i]/targetCoupling;
+    }
+
+    return normState;
 }
 
 
