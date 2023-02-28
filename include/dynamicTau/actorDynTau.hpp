@@ -90,7 +90,15 @@ int optimumPolicy(const std::vector<double>& qValue)
 
 int randomPolicy(size_t numAction, std::minstd_rand* generator)
 {
-  return (*generator)() % numAction;
+  // // Unbiased random policy
+  // return (*generator)() % numAction;
+
+  // Bias the generation towards 0; P(0) = bias+1/(bias)
+  int bias = 3;
+
+  // Generate a random number between 0 and numAction+bias (exclusive)
+  return (((*generator)() % (numAction+bias)) == (numAction+bias-1)) ? 1 : 0;
+
 }
 
 int ActorDynTau::proposeAction(const Feature& state, const double epsilon)
