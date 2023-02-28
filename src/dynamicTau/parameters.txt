@@ -5,7 +5,7 @@ gammaGain=1
 # Axion generation parameters (freq in MHz)
 gGammaSim=0.1
 axionFreq=6999.5
-axionBool=1
+axionBool=0
 
 # Scanning Parameters (center and step in MHz, resolution in Hz)
 sigmaProc=0.1
