@@ -3,8 +3,8 @@
 
 #include "learner/reinforcement_learner/ReinforcementLearner.hpp"
 
-constexpr int numTrialDefault = 5;
-constexpr int numEpisodeDefault = 50;
+constexpr int numTrialDefault = 50;
+constexpr int numEpisodeDefault = 500;
 
 int main()
 {
