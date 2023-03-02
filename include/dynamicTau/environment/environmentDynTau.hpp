@@ -42,12 +42,17 @@ public:
 		startFreq = bf.centerFreq;
 	}
 
+	void reset(std::string name){
+		bf.init(name);
+		startFreq = bf.centerFreq;
+	}
+
 	Feature state() const override{
 		return bf.getState();
 	}
 
 	bool done() const override{
-		return bf.centerFreq > (startFreq + bf.scanningWindowSize);
+		return bf.startIndex > bf.rewardEndIndex;
 	}
 
   	double score() const override{
