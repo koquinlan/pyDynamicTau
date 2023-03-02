@@ -16,11 +16,7 @@ int main() {
 
     // Create a vector of input values for the RL agent
     EnvironmentDynTau env;
-    env.reset();
-
-    // Modify some of the scanning parameters
-    env.bf.scanningWindowSize = 10;
-    env.bf.targetCoupling = 0.02;
+    env.reset("newParams.txt");
 
     env.applyAction(0);
 
@@ -38,6 +34,9 @@ int main() {
     }
 
     std::cout << "Final reward: " << env.reward() << std::endl;
+
+    std::cout << "Reward window between " << env.bf.fullFreqRange[env.bf.rewardStartIndex] << " and " 
+    << env.bf.fullFreqRange[env.bf.rewardEndIndex] << " MHz" << std::endl;
 
     Feature state = env.state();
     std::vector<double> vecState(state.begin(), state.end());
