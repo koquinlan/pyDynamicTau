@@ -16,21 +16,21 @@ int main() {
 
     // Create a vector of input values for the RL agent
     EnvironmentDynTau env;
-    env.reset("newParams.txt");
+    // env.reset("newParams.txt");
+    env.reset();
 
     env.applyAction(0);
 
     while(!env.done()){
-        std::cout << "Score: " << env.score()<< std::endl;
-
         // Use the RL agent to choose an action based on the input tensor
         Feature previousState = env.state();
         int action = actor.proposeAction(previousState, 0);
 
-        env.applyAction(action);
+        if (action == 1){
+            std::cout << "Stepping with score: " << env.score()<< std::endl;
+        }
 
-        
-        std::cout << "Applying action: " << action << std::endl;
+        env.applyAction(action);
     }
 
     std::cout << "Final reward: " << env.reward() << std::endl;

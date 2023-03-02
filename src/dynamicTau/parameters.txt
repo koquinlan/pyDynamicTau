@@ -12,7 +12,7 @@ sigmaProc=0.1
 nSpectra=10
 centerFreq=6999
 tuningStepFreq=0.1
-scanningWindowSize=10
+scanningWindowSize=5
 
 
 # If changing this freq res or window size, also need to change the input layer size in bayes.hpp
@@ -20,7 +20,7 @@ freqWindowSize=5000000
 freqRes=100
 
 # Reward Parameters
-targetCoupling=0.02
+targetCoupling=0.04
 
 #Tanh Reward
 peakReward=60
