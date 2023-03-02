@@ -161,7 +161,7 @@ double BayesFactors::getReward() const{
     if(exclusionLine.size() >= rewardEndIndex){
         std::vector<double> fullWindow(exclusionLine.begin()+rewardStartIndex, exclusionLine.begin()+rewardEndIndex);
 
-        Feature fullState = windowMax(fullWindow, 2*state.size());
+        Feature fullState = windowMax(fullWindow, state.size());
 
         for (int i=0; i<fullState.size(); i++){
             reward += rewardFunction(fullState[i])/(peakReward*fullState.size());
