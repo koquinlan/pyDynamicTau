@@ -40,7 +40,7 @@ class BayesFactors{
     std::vector<double> coeffSumB;
     
     // Reward parameters
-    double rewardStartIndex, rewardEndIndex;
+    int rewardStartIndex, rewardEndIndex;
     double targetCoupling;
     // Piecewise reward
     double belowThresholdValue, aboveThresholdValue, stepPunish;
