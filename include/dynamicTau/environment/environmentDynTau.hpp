@@ -16,12 +16,13 @@ class EnvironmentDynTau : Environment<Feature> {
 	const EnvironmentDynTauConfiguration configuration;
 	const double timestep;
 
-	BayesFactors bf;
 	int stepCtr{};
 
 	double startFreq;
 
 public:
+
+	BayesFactors bf;
 
 	inline static const size_t numberOfPossibleActions = 2;
 

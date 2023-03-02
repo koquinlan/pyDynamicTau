@@ -11,6 +11,9 @@
 #include "Util.hpp"
 #include "learner/reinforcement_learner/Actor.hpp"
 
+#include "dynamicTau/environment/bayes.hpp"
+#include "dynamicTau/environment/environmentDynTau.hpp"
+
 class ActorDynTau : Actor<Feature> {
 
   static constexpr double learningRate = 0.001;
