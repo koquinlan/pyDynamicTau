@@ -2,9 +2,12 @@
 
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 #include "support/trial_runner/TrialRunner.hpp"
 #include "support/episode_runner/EpisodeRunner.hpp"
+
+#define TIMING (1)
 
 template<class actorClass, class stateClass, class environmentClass>
 class ReinforcementLearner {
@@ -62,6 +65,18 @@ private:
       return cacher.useCache<TrialResult>(__FUNCTION__, [this]() {
           TrialResult maxFidelityTrial = UNINITIALIZED_TRIAL_RESULT;
           for (int trialNumber = 0; trialNumber < totalNumberOfTrials; trialNumber++) {
+            
+            #if TIMING
+              auto now = std::chrono::system_clock::now();
+              auto now_ms = std::chrono::time_point_cast<std::chrono::milliseconds>(now);
+              auto now_time_t = std::chrono::system_clock::to_time_t(now);
+              std::cout << "Trial " << trialNumber << " " <<
+              "started at " << std::put_time(std::localtime(&now_time_t), "%F %T") << 
+              "." << now_ms.time_since_epoch().count() % 1000 << std::endl;
+
+              std::chrono::high_resolution_clock::time_point trialStart = std::chrono::high_resolution_clock::now();
+            #endif
+
             TrialRunner<actorClass, stateClass, environmentClass> trial{trialNumber,
                                                                         totalNumberOfTrials,
                                                                         totalNumberOfEpisodes,
@@ -71,6 +86,14 @@ private:
               maxFidelityTrial = trialResult;
             }
             logTrial(trialNumber, maxFidelityTrial.fidelityAchieved, trialResult, trial.epsilon);
+
+            #if TIMING
+              std::chrono::high_resolution_clock::time_point trialStop = std::chrono::high_resolution_clock::now();
+              std::chrono::duration<double, std::nano> trialTime = std::chrono::duration_cast<std::chrono::nanoseconds>(trialStop-trialStart);
+
+              std::cout << "Trial " << trialNumber << " runtime: " << trialTime.count()/(1e9) << " seconds" << std::endl;
+
+            #endif
           }
           actor.save("param");
           return maxFidelityTrial;

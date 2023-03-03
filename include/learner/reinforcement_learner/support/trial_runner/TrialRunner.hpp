@@ -6,6 +6,8 @@
 #include "TrialResult.hpp"
 #include "../../learnerUtil.hpp"
 
+#define TIMING (1)
+
 static const int UNINITIALIZED_FIDELITY = -1;
 static TrialResult UNINITIALIZED_TRIAL_RESULT = TrialResult{UNINITIALIZED_FIDELITY, std::vector<int>{}, 0.0};
 
@@ -22,6 +24,11 @@ public:
     TrialResult run() {
       return cacher.useCache<TrialResult>(__FUNCTION__, [this]() {
           std::vector<TrialResult> trialResults = trialResultsForEachEpisode();
+
+          #if TIMING
+            printTrialStepInfo(trialResults);
+          #endif
+
           return getTrialResultWithMaximumFidelity(trialResults);
       });
     }
