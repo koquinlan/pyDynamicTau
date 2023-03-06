@@ -10,6 +10,8 @@ namespace plt = matplotlibcpp;
 
 
 int main() {
+    std::cout << "in main" << std::endl;
+
     ActorDynTau actor;
 
     actor.load("param");
