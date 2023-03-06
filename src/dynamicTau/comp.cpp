@@ -14,7 +14,7 @@ int main() {
 
     ActorDynTau actor;
 
-    actor.load("param");
+    actor.load("trained_0p03_50_500");
 
     // Create a vector of input values for the RL agent
     EnvironmentDynTau env;
@@ -48,6 +48,7 @@ int main() {
 
     plt::plot(env.bf.fullFreqRange, env.bf.exclusionLine);
     plt::plot(env.bf.fullFreqRange, std::vector<double> (env.bf.fullFreqRange.size(), env.bf.targetCoupling));
+    plt::plot(env.bf.fullFreqRange, std::vector<double> (env.bf.fullFreqRange.size(), 0.045));
     plt::show();
 
     return 0;

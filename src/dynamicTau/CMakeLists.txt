@@ -70,4 +70,12 @@ if(MSVC)
         ${PARAMETER_FILE}
         $<TARGET_FILE_DIR:${PROJECT_NAME}Comp>
     )
+
+    message(STATUS "Copying Agent Files")
+    add_custom_command(TARGET ${PROJECT_NAME}Comp
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${AGENT_DIR}
+    $<TARGET_FILE_DIR:${PROJECT_NAME}Comp>
+    )
 endif(MSVC)
