@@ -2,6 +2,10 @@
 
 #include <cmath>
 
+// Random coupling generation
+#include <cstdlib>
+#include <ctime>
+
 #include "bayes.hpp"
 #include "learner/reinforcement_learner/environment.hpp"
 
@@ -39,6 +43,11 @@ public:
 
 	void reset() override{
 		bf.init("parameters.txt");
+
+		// Randomly select a target coupling between 0.02 and 0.07
+		srand(time(NULL));
+		bf.targetCoupling = ((double)rand()/(double)RAND_MAX)/20+0.02;
+
 		startFreq = bf.centerFreq;
 	}
 
