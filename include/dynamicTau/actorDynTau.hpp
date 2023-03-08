@@ -17,8 +17,8 @@
 class ActorDynTau : Actor<Feature> {
 
   static constexpr double learningRate = 0.001;
-  static constexpr double gamma = 0.98;
-  static constexpr int numHidden = 8;
+  static constexpr double gamma = 0.99;
+  static constexpr int numHidden = 10;
   static constexpr int minSampleSize = 20;
   static constexpr double tau = 0.8;
 
