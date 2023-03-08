@@ -194,8 +194,16 @@ Feature BayesFactors::getState() const{
 
     // Normalize exclusions to target coupling
     for (int i=0; i<state.size(); i++){
-        // Grows to 1 on peak, greater than 1 is an overshoot
-        normState[i] = targetCoupling/state[i];
+        // Normalized to be between -1 and 1
+        normState[i] = targetCoupling/state[i]-1;
+
+        if (normState[i] < -1){
+            normState[i] = -1;
+        }
+
+        if (normState[i] > 1){
+            normState[i] = 1;
+        }
     }
 
     return normState;
