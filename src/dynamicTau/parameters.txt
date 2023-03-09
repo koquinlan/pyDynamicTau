@@ -1,6 +1,6 @@
 # Gain profile parameters
 maxGain=60.0
-gammaGain=1
+gammaGain=0.1
 
 # Axion generation parameters (freq in MHz)
 gGammaSim=0.1
@@ -15,7 +15,6 @@ tuningStepFreq=0.1
 scanningWindowSize=5
 
 
-# If changing this freq res or window size, also need to change the input layer size in bayes.hpp
 freqWindowSize=5000000
 freqRes=100
 
