@@ -49,8 +49,11 @@ include_directories(include)
 
 ####   Find all Subdirectories   ###
 set(AGENT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/trained")
+set(SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/src")
+
 add_subdirectory(src/beamsplitter)
 add_subdirectory(src/dynamicTau)
+add_subdirectory(src/dynamicTau/comps)
 
 
 

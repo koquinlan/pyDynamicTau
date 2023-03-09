@@ -189,6 +189,45 @@ void BayesFactors::updateState(){
 
 
 
+Feature BayesFactors::getStateAxis() const{
+    std::vector<double> activeWindow(fullFreqRange.begin()+startIndex, fullFreqRange.end());
+    
+    Feature output;
+
+    // Calculate the size of each "bin"
+    int binSize = activeWindow.size() / output.size();
+
+    // Loop over each bin
+    for (int i = 0; i < output.size()-1; i++)
+    {
+        // Calculate the start and end indices of the current bin
+        int windowStartIndex = i * binSize;
+        int windowEndIndex = windowStartIndex + binSize;
+
+        // Calculate the average of the frequency bin
+        output[i] = (activeWindow[windowStartIndex] + activeWindow[windowEndIndex])/2;
+    }
+
+    // Calculate the start and end indices of the last bin
+    int windowStartIndex = (output.size() - 1) * binSize;
+    int windowEndIndex = activeWindow.size();
+
+    // Calculate the average for last bin
+    output[output.size()-1] = (activeWindow[windowStartIndex] + activeWindow[windowEndIndex])/2;
+
+    return output;
+}
+
+
+
+std::vector<double> BayesFactors::getActiveAxis() const{
+    std::vector<double> activeAxis(fullFreqRange.begin()+startIndex, fullFreqRange.end());
+    return activeAxis;
+}
+
+
+
+
 Feature BayesFactors::getState() const{
     Feature normState;
 

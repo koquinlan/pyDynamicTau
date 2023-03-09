@@ -67,6 +67,8 @@ class BayesFactors{
     void step(int stepForward);
 
     Feature getState() const;
+    Feature getStateAxis() const;
+    std::vector<double> getActiveAxis() const;
     double getReward() const;
     double getScore() const;
 
