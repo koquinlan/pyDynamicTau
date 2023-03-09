@@ -36,6 +36,8 @@ void BayesFactors::init(const std::string& parametersFile){
         exclusionLine.push_back(100);
         coeffSumA.push_back(0);
         coeffSumB.push_back(0);
+
+        SNR.push_back(0);
     }
 
     // Determine the window over which the reward should be calculated
@@ -143,6 +145,7 @@ void BayesFactors::step(int stepForward){
     // Calculate a set of new Bayes factors based on the current simulation settings
     combinedSpectrum combined = genCombined();
 
+    SNR = combined.SNR;
     updateBayes(combined);
     updateExclusionLine(combined);
     updateState();
@@ -210,7 +213,7 @@ Feature BayesFactors::getStateAxis() const{
 
     // Calculate the start and end indices of the last bin
     int windowStartIndex = (output.size() - 1) * binSize;
-    int windowEndIndex = activeWindow.size();
+    int windowEndIndex = activeWindow.size()-1;
 
     // Calculate the average for last bin
     output[output.size()-1] = (activeWindow[windowStartIndex] + activeWindow[windowEndIndex])/2;
@@ -228,20 +231,27 @@ std::vector<double> BayesFactors::getActiveAxis() const{
 
 
 
-Feature BayesFactors::getState() const{
+Feature BayesFactors::getState(int normalized) const{
     Feature normState;
 
-    // Normalize exclusions to target coupling
-    for (int i=0; i<state.size(); i++){
-        // Normalized to be between -1 and 1
-        normState[i] = targetCoupling/state[i]-1;
+    // No normalizing
+    if (normalized == 0){
+        normState = state;
+    }
 
-        if (normState[i] < -1){
-            normState[i] = -1;
-        }
+    // Normalized to be between -1 and 1 - negative is undershoot, 0 is on target, positive is an overshoot
+    else if (normalized == 1){
+        // Normalize exclusions to target coupling
+        for (int i=0; i<state.size(); i++){
+            normState[i] = targetCoupling/state[i]-1;
 
-        if (normState[i] > 1){
-            normState[i] = 1;
+            if (normState[i] < -1){
+                normState[i] = -1;
+            }
+
+            if (normState[i] > 1){
+                normState[i] = 1;
+            }
         }
     }
 
@@ -458,6 +468,8 @@ combinedSpectrum BayesFactors::genCombined(){
     for(int j=0; j<rescaled.size(); j++){
         combined.addRescaledSpectrum(rescaled[j]);
     }
+
+    combined.SNR = rescaled[0].SNR;
 
     return combined;
 }

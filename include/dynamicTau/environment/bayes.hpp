@@ -14,7 +14,7 @@
 
 #include "proc.hpp"
 
-const int inputSize = 14;
+const int inputSize = 49;
 typedef std::array<double, inputSize> Feature;
 
 /**
@@ -54,6 +54,7 @@ class BayesFactors{
 
     // Gain profile options
     double maxGain, gammaGain;
+    std::vector<double> SNR;
 
     // Scanning options
     double centerFreq, sigmaProc;
@@ -66,7 +67,7 @@ class BayesFactors{
     void init(const std::string& parametersFile);
     void step(int stepForward);
 
-    Feature getState() const;
+    Feature getState(int normalized = 1) const;
     Feature getStateAxis() const;
     std::vector<double> getActiveAxis() const;
     double getReward() const;

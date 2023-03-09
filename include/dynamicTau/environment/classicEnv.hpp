@@ -37,7 +37,7 @@ public:
 	}
 
 	Feature state() const {
-		return bf.getState();
+		return bf.getState(0);
 	}
 
     Feature stateAxis() const {

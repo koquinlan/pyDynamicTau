@@ -38,9 +38,10 @@ int main() {
         std::vector<double> activeWindow(env.bf.exclusionLine.begin()+env.bf.startIndex, env.bf.exclusionLine.end());
         std::vector<double> activeAxis(env.bf.fullFreqRange.begin()+env.bf.startIndex, env.bf.fullFreqRange.end());
 
-        plt::plot(activeAxis, activeWindow);
-        plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
-        plt::scatter(vecStateAxis, vecState);
+        plt::plot(activeAxis, env.bf.SNR);
+        // plt::plot(activeAxis, activeWindow);
+        // plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
+        // plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
         plt::show();
     }
