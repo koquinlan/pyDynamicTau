@@ -8,8 +8,7 @@ namespace plt = matplotlibcpp;
 #include "dynamicTau/actorDynTau.hpp"
 #include "dynamicTau/environment/bayes.hpp"
 #include "dynamicTau/environment/classicEnv.hpp"
-
-
+#include "dynamicTau/classicDynTau.hpp"
 
 int main() {
     // Create a vector of input values for the decision agent
@@ -18,18 +17,30 @@ int main() {
     // env.reset("newParams.txt");
     env.reset();
 
-    while(true){
-        std::cout << "Enter 1 to take more data, 2 to step forward or 0 to exit: ";
-        int choice;
-        std::cin >> choice;
 
-        if(choice == 0){
+    Feature SNRinit = env.bf.windowAverage(env.bf.SNR, env.state().size());
+
+    classicDynTau<Feature> algo(SNRinit);
+
+    while(true){
+        int choice;
+
+        #ifdef MANUAL
+            std::cout << "Enter 1 to take more data, 2 to step forward or 0 to exit: ";
+            std::cin >> choice;
+            choice --;
+        #else
+            choice = algo.proposeAction(env.state());
+        #endif
+
+        if(choice == -1 || env.done()){
             break;
         }
         else {
-            env.applyAction((int) (choice-1));
+            env.applyAction(choice);
+            std::cout << choice << std::endl;
         }
-
+        
         Feature state = env.state();
         Feature stateAxis = env.stateAxis();
 
@@ -44,6 +55,7 @@ int main() {
 
         for (int i = 0; i < SNR.size(); i++) SNR[i] *= rescale;
 
+        plt::clf();
 
         plt::plot(activeAxis, activeWindow);
         plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
@@ -51,6 +63,8 @@ int main() {
         plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
         plt::show();
+
+        plt::pause(0.01);
     }
 
     std::cout << "Final reward: " << env.reward() << std::endl;

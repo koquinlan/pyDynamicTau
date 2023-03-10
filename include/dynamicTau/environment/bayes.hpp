@@ -74,6 +74,9 @@ class BayesFactors{
     double getScore() const;
 
     
+    Feature windowAverage(const std::vector<double>& input, int outputSize) const;
+    Feature windowMax(const std::vector<double>& input, int outputSize) const;
+
     private:
 
     Feature state;
@@ -86,7 +89,4 @@ class BayesFactors{
     void updateExclusionLine(combinedSpectrum combined);
     void updateState();
     double rewardFunction(double excludedCoupling) const;
-
-    Feature windowAverage(const std::vector<double>& input, int outputSize) const;
-    Feature windowMax(const std::vector<double>& input, int outputSize) const;
 };

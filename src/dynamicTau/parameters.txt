@@ -19,7 +19,7 @@ freqWindowSize=5000000
 freqRes=100
 
 # Reward Parameters
-targetCoupling=0.03
+targetCoupling=0.08
 
 #Tanh Reward
 peakReward=60

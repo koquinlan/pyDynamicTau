@@ -1,23 +1,32 @@
 #pragma once
 
-#include "dynamicTau/environment/bayes.hpp"
-#include "dynamicTau/environment/environmentDynTau.hpp"
+#include <vector>
 
 template <class stateClass>
-class {
+class classicDynTau {
 
     double targetCoupling;
     double threshold;
     stateClass points;
 
 public:
+    classicDynTau(stateClass SNR) {
+        setPoints(SNR);
+        setThreshold();
+    }
+
     int proposeAction(stateClass& state){
-        if (checkScore(state) > threshold){
-            return 0;
+        return (checkScore(state) < threshold);
+    }
+
+    double checkScore(stateClass& state){
+        double score = 0;
+
+        for (int i=0; i < state.size(); i++){
+            if (state[i] > targetCoupling) score += points[i];
         }
-        else{
-            return 1;
-        }
+
+        return score;
     }
 
     void setPoints(stateClass& SNR){
@@ -29,7 +38,10 @@ public:
         }
     }
 
-    double checkScore(stateClass& state){
-        
+    void setThreshold(){
+        threshold = 0;
+        for(int i=0; i < (int)points.size()/3; i++){
+            threshold += points[i];
+        }
     }
-}
+};

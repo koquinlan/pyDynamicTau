@@ -34,10 +34,23 @@ public:
 	void reset(std::string name){
 		bf.init(name);
 		startFreq = bf.centerFreq;
+        bf.step(0);
 	}
 
 	Feature state() const {
-		return bf.getState(0);
+		Feature output = bf.getState(0);
+
+        if (bf.rewardStartIndex > bf.startIndex){
+            Feature axis = stateAxis();
+
+            int axIndex=0;
+            while(axis[axIndex] < bf.fullFreqRange[bf.rewardStartIndex]){
+                output[axIndex] = 0;
+                axIndex ++;
+            }
+        }
+
+        return output;
 	}
 
     Feature stateAxis() const {
