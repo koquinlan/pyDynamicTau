@@ -46,7 +46,7 @@ public:
 
             int axIndex=0;
             while(axis[axIndex] < bf.fullFreqRange[bf.rewardStartIndex]){
-                output[axIndex] = 0;
+                output[axIndex] = bf.targetCoupling;
                 axIndex ++;
             }
         }

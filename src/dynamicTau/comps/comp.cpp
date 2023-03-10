@@ -33,8 +33,8 @@ int main() {
             std::cin >> choice;
             choice --;
         #else
-            // choice = algo.proposeAction(env.state());
-            choice = (scanCount >=4);
+            choice = algo.proposeAction(env.state());
+            // choice = (scanCount >= 4);
         #endif
 
         if(choice == -1 || env.done()){
