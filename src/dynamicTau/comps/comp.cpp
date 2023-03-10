@@ -3,6 +3,7 @@ namespace plt = matplotlibcpp;
 
 #include <vector>
 #include <iostream>
+#include <algorithm>
 
 #include "dynamicTau/actorDynTau.hpp"
 #include "dynamicTau/environment/bayes.hpp"
@@ -38,10 +39,16 @@ int main() {
         std::vector<double> activeWindow(env.bf.exclusionLine.begin()+env.bf.startIndex, env.bf.exclusionLine.end());
         std::vector<double> activeAxis(env.bf.fullFreqRange.begin()+env.bf.startIndex, env.bf.fullFreqRange.end());
 
-        plt::plot(activeAxis, env.bf.SNR);
-        // plt::plot(activeAxis, activeWindow);
-        // plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
-        // plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
+        std::vector<double> SNR = env.bf.SNR;
+        double rescale = std::max_element(vecState.begin(), vecState.end())[0];
+
+        for (int i = 0; i < SNR.size(); i++) SNR[i] *= rescale;
+
+
+        plt::plot(activeAxis, activeWindow);
+        plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
+        plt::plot(activeAxis, SNR);
+        plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
         plt::show();
     }
