@@ -25,7 +25,7 @@ public:
         for (int i=0; i < state.size(); i++){
             if (state[i] > targetCoupling) score += points[i];
         }
-
+        
         return score;
     }
 

@@ -22,7 +22,7 @@ int main() {
 
     classicDynTau<Feature> algo(SNRinit);
 
-    while(true){
+    while (true){
         int choice;
 
         #ifdef MANUAL
@@ -62,24 +62,19 @@ int main() {
         plt::plot(activeAxis, SNR);
         plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
-        plt::show();
-
         plt::pause(0.01);
     }
 
-    std::cout << "Final reward: " << env.reward() << std::endl;
+    // std::cout << "Final reward: " << env.reward() << std::endl;
 
-    std::cout << "Reward window between " << env.bf.fullFreqRange[env.bf.rewardStartIndex] << " and " 
-    << env.bf.fullFreqRange[env.bf.rewardEndIndex] << " MHz" << std::endl;
+    // std::cout << "Reward window between " << env.bf.fullFreqRange[env.bf.rewardStartIndex] << " and " 
+    // << env.bf.fullFreqRange[env.bf.rewardEndIndex] << " MHz" << std::endl;
 
-    Feature state = env.state();
-    std::vector<double> vecState(state.begin(), state.end());
+    // Feature state = env.state();
+    // std::vector<double> vecState(state.begin(), state.end());
 
-    plt::plot(vecState);
-    plt::show();
-
-
-    plt::show();
+    // plt::plot(vecState);
+    // plt::show();
 
     return 0;
 }
