@@ -14,7 +14,7 @@
 
 #include "proc.hpp"
 
-const int inputSize = 49;
+const int inputSize = 99;
 typedef std::array<double, inputSize> Feature;
 
 /**

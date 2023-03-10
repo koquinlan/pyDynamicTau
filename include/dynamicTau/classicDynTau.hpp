@@ -5,12 +5,14 @@
 template <class stateClass>
 class classicDynTau {
 
+public:
     double targetCoupling;
     double threshold;
     stateClass points;
 
-public:
-    classicDynTau(stateClass SNR) {
+    classicDynTau(stateClass SNR, double target) {
+        targetCoupling = target;
+        
         setPoints(SNR);
         setThreshold();
     }
@@ -34,13 +36,13 @@ public:
         points[points.size()-1] = 1;
 
         for(int i=SNR.size()-2; i>=0; i--){
-            points[i] = SNR[i+1] + SNR[i]/norm;
+            points[i] = points[i+1] + SNR[i]/norm;
         }
     }
 
     void setThreshold(){
         threshold = 0;
-        for(int i=0; i < (int)points.size()/3; i++){
+        for(int i=(points.size()-1); i > (int)((points.size()-1)/2.4); i--){
             threshold += points[i];
         }
     }

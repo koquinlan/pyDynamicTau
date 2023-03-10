@@ -4,6 +4,7 @@ namespace plt = matplotlibcpp;
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <numeric>
 
 #include "dynamicTau/actorDynTau.hpp"
 #include "dynamicTau/environment/bayes.hpp"
@@ -17,10 +18,12 @@ int main() {
     // env.reset("newParams.txt");
     env.reset();
 
-
     Feature SNRinit = env.bf.windowAverage(env.bf.SNR, env.state().size());
 
-    classicDynTau<Feature> algo(SNRinit);
+    classicDynTau<Feature> algo(SNRinit, env.bf.targetCoupling);
+
+    std::vector<int> stepInfo;
+    int scanCount=0;
 
     while (true){
         int choice;
@@ -30,7 +33,8 @@ int main() {
             std::cin >> choice;
             choice --;
         #else
-            choice = algo.proposeAction(env.state());
+            // choice = algo.proposeAction(env.state());
+            choice = (scanCount >=4);
         #endif
 
         if(choice == -1 || env.done()){
@@ -38,9 +42,18 @@ int main() {
         }
         else {
             env.applyAction(choice);
-            std::cout << choice << std::endl;
+            if (choice){
+                std::cout << "Stepping forward." << std::endl;
+                stepInfo.push_back(scanCount);
+
+                scanCount = 0;
+            }
+            else{
+                scanCount++;
+            }
         }
         
+        // std::cout << "Current score: " << algo.checkScore(env.state()) << " vs. threshold " << algo.threshold << std::endl;
         Feature state = env.state();
         Feature stateAxis = env.stateAxis();
 
@@ -62,19 +75,23 @@ int main() {
         plt::plot(activeAxis, SNR);
         plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
-        plt::pause(0.01);
+        plt::pause(0.001);
     }
 
-    // std::cout << "Final reward: " << env.reward() << std::endl;
+    std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
+    std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
+    std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
 
-    // std::cout << "Reward window between " << env.bf.fullFreqRange[env.bf.rewardStartIndex] << " and " 
-    // << env.bf.fullFreqRange[env.bf.rewardEndIndex] << " MHz" << std::endl;
+    plt::show();
 
-    // Feature state = env.state();
-    // std::vector<double> vecState(state.begin(), state.end());
+    plt::clf();
 
-    // plt::plot(vecState);
-    // plt::show();
+    std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
+    std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
+
+    plt::plot(fullAxis, fullWindow);
+    plt::plot(fullAxis, std::vector<double> (fullAxis.size(), env.bf.targetCoupling));
+    plt::show();
 
     return 0;
 }

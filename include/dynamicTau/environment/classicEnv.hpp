@@ -29,6 +29,7 @@ public:
 		bf.init("parameters.txt");
 
 		startFreq = bf.centerFreq;
+        bf.step(0);
 	}
 
 	void reset(std::string name){
