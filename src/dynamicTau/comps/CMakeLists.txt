@@ -4,6 +4,7 @@ set(SOURCES
     ../bayes.cpp
     ../proc.cpp
     ../spectrum.cpp
+    scanRunner.cpp
 )
 
 include_directories(include)

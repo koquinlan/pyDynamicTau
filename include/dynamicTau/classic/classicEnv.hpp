@@ -6,7 +6,7 @@
 #include <cstdlib>
 #include <ctime>
 
-#include "bayes.hpp"
+#include "dynamicTau/environment/bayes.hpp"
 
 class ClassicEnvDynTau {
 
