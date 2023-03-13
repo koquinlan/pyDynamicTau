@@ -12,12 +12,12 @@ int ScanRunner::makeChoice(){
     #ifdef MANUAL
         choice = queryChoice();
     #else
-        // if (env.bf.startIndex > env.bf.rewardStartIndex){
-        if (0){
+        if (env.bf.startIndex > env.bf.rewardStartIndex){
+        // if (0){
             choice = algo.proposeAction(env.state());
         }
         else{
-            choice = (scanCount >= 11);
+            choice = (scanCount >= 3);
         }
     #endif
 
