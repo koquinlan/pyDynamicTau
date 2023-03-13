@@ -42,8 +42,11 @@ public:
 
     void setThreshold(){
         threshold = 0;
-        for(int i=(points.size()-1); i > (int)((points.size()-1)/2.4); i--){
+        for(int i=(points.size()-1); i > (int)((points.size()-1)/2); i--){
             threshold += points[i];
         }
+
+        threshold += points[0];
+        threshold += points[1];
     }
 };

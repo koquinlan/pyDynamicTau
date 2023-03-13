@@ -33,8 +33,12 @@ int main() {
             std::cin >> choice;
             choice --;
         #else
-            choice = algo.proposeAction(env.state());
-            // choice = (scanCount >= 4);
+            if (env.bf.startIndex > env.bf.rewardStartIndex){
+                choice = algo.proposeAction(env.state());
+            }
+            else{
+                choice = (scanCount >= 12);
+            }
         #endif
 
         if(choice == -1 || env.done()){
@@ -64,7 +68,9 @@ int main() {
         std::vector<double> activeAxis(env.bf.fullFreqRange.begin()+env.bf.startIndex, env.bf.fullFreqRange.end());
 
         std::vector<double> SNR = env.bf.SNR;
-        double rescale = std::max_element(vecState.begin(), vecState.end())[0];
+
+        // double rescale = std::max_element(vecState.begin(), vecState.end())[0];
+        double rescale = 0.4;
 
         for (int i = 0; i < SNR.size(); i++) SNR[i] *= rescale;
 
@@ -75,7 +81,10 @@ int main() {
         plt::plot(activeAxis, SNR);
         plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
 
-        plt::pause(0.001);
+        plt::ylim((double)0, rescale);
+        plt::title("Simulated Scanning Run");
+
+        plt::pause(0.0001);
     }
 
     std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
