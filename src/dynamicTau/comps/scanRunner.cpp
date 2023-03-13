@@ -53,25 +53,6 @@ int ScanRunner::applyChoice(int choice){
     return 1;
 }
 
-
-void ScanRunner::showFinal(){
-    // Print info about requested scan numbers
-    std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
-    std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
-    std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
-
-    // Decompose full range into the reward window and corresponding x-axis
-    std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
-    std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
-
-    // Plot full axis and target coupling
-    plt::clf();
-
-    plt::plot(fullAxis, fullWindow);
-    plt::plot(fullAxis, std::vector<double> (fullAxis.size(), env.bf.targetCoupling));
-    plt::show();
-}
-
 void ScanRunner::showState(int continuousPlotting){
     // std::cout << "Current score: " << algo.checkScore(env.state()) << " vs. threshold " << algo.threshold << std::endl;
     Feature state = env.state();
@@ -102,4 +83,80 @@ void ScanRunner::showState(int continuousPlotting){
 
     if (continuousPlotting) plt::pause(0.0001);
     else plt::show();
+}
+
+void ScanRunner::showFinal(){
+    // Print info about requested scan numbers
+    std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
+    std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
+    std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
+
+    // Decompose full range into the reward window and corresponding x-axis
+    std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
+    std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
+
+    // Plot full axis and target coupling
+    plt::clf();
+
+    plt::plot(fullAxis, fullWindow);
+    plt::plot(fullAxis, std::vector<double> (fullAxis.size(), env.bf.targetCoupling));
+    plt::show();
+}
+
+void ScanRunner::saveFinal(){
+    // Decompose full range into the reward window and corresponding x-axis
+    std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
+    std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
+
+
+    // Save final scanning result
+    std::string stateFilename = "finalState.csv";
+    std::ofstream stateFile(stateFilename);
+
+    if (!stateFile.is_open()) {
+        std::cerr << "Error: unable to open file " << stateFilename << "\n";
+        return;
+    }
+    for (size_t i = 0; i < fullAxis.size(); i++) {
+        stateFile << fullAxis[i] << "," << fullWindow[i] << "\n";
+    }
+    stateFile.close();
+
+
+    // Save scanning step information
+    std::string stepFilename = "stepInfo.csv";
+    std::ofstream stepFile(stepFilename);
+
+    if (!stepFile.is_open()) {
+        std::cerr << "Error: unable to open file " << stepFilename << "\n";
+        return;
+    }
+    for (size_t i = 0; i < stepInfo.size(); i++) {
+        stepFile << stepInfo[i] << "\n";
+    }
+    stepFile.close();
+
+
+    // Create formatted name for the folder
+    auto now = std::chrono::system_clock::now();
+    auto now_time_t = std::chrono::system_clock::to_time_t(now);
+    std::stringstream ss;
+    ss << "scanningRun_" << std::put_time(std::localtime(&now_time_t), "%Y-%m-%d_%H-%M-%S");
+    std::string folderName = ss.str();
+    std::string folderPath = "../" + folderName;
+
+    // Create folder to store info
+    if (!std::filesystem::create_directory(folderPath)) {
+        std::cerr << "Error: unable to create folder " << folderPath << "\n";
+        return;
+    }
+
+
+    // Move the stored vectors to the created folder
+    if (std::filesystem::exists(folderPath)) {
+        std::filesystem::rename(stateFilename, folderName + "/" + stateFilename);
+        std::filesystem::rename(stepFilename, folderName + "/" + stepFilename);
+    } else {
+        std::cerr << "Error: unable to move files to folder\n";
+    }
 }

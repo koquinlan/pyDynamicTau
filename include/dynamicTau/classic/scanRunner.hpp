@@ -4,9 +4,16 @@
 namespace plt = matplotlibcpp;
 
 #include <vector>
-#include <iostream>
 #include <algorithm>
 #include <numeric>
+
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+
+#include <chrono>
+#include <iomanip>
 
 #include "dynamicTau/environment/bayes.hpp"
 #include "dynamicTau/classic/classicEnv.hpp"
@@ -37,4 +44,6 @@ public:
 
     void showState(int continuousPlotting = 1);
     void showFinal();
+
+    void saveFinal();
 };

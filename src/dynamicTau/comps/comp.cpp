@@ -5,6 +5,7 @@ int main() {
 
     runner.runScan();
     runner.showFinal();
+    runner.saveFinal();
 
     return 0;
 }
