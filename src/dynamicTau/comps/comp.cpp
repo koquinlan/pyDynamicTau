@@ -13,50 +13,37 @@ namespace plt = matplotlibcpp;
 
 int main() {
     // Create a vector of input values for the decision agent
+    return 0;
+}
+
+class ScanRunner {
+
+public:
+
     ClassicEnvDynTau env;
-
-    // env.reset("newParams.txt");
-    env.reset();
-
-    Feature SNRinit = env.bf.windowAverage(env.bf.SNR, env.state().size());
-
-    classicDynTau<Feature> algo(SNRinit, env.bf.targetCoupling);
+    classicDynTau<Feature> algo;
 
     std::vector<int> stepInfo;
     int scanCount=0;
 
-    while (true){
+    ScanRunner() : env() {
+        env.reset();
+
+        Feature SNRinit = env.bf.windowAverage(env.bf.SNR, env.state().size());
+        algo = classicDynTau<Feature>(SNRinit, env.bf.targetCoupling);
+    }
+
+    int queryChoice(){
         int choice;
 
-        #ifdef MANUAL
-            std::cout << "Enter 1 to take more data, 2 to step forward or 0 to exit: ";
-            std::cin >> choice;
-            choice --;
-        #else
-            if (env.bf.startIndex > env.bf.rewardStartIndex){
-                choice = algo.proposeAction(env.state());
-            }
-            else{
-                choice = (scanCount >= 12);
-            }
-        #endif
+        std::cout << "Enter 1 to take more data, 2 to step forward or 0 to exit: ";
+        std::cin >> choice;
+        choice --;
 
-        if(choice == -1 || env.done()){
-            break;
-        }
-        else {
-            env.applyAction(choice);
-            if (choice){
-                std::cout << "Stepping forward." << std::endl;
-                stepInfo.push_back(scanCount);
+        return choice;
+    }
 
-                scanCount = 0;
-            }
-            else{
-                scanCount++;
-            }
-        }
-        
+    void showState(int continuousPlotting = 1){
         // std::cout << "Current score: " << algo.checkScore(env.state()) << " vs. threshold " << algo.threshold << std::endl;
         Feature state = env.state();
         Feature stateAxis = env.stateAxis();
@@ -84,23 +71,69 @@ int main() {
         plt::ylim((double)0, rescale);
         plt::title("Simulated Scanning Run");
 
-        plt::pause(0.0001);
+        if (continuousPlotting) plt::pause(0.0001);
+        else plt::show();
     }
 
-    std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
-    std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
-    std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
+    void showFinal(){
+        // Print info about requested scan numbers
+        std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
+        std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
+        std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
 
-    plt::show();
+        // Decompose full range into the reward window and corresponding x-axis
+        std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
+        std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
 
-    plt::clf();
+        // Plot full axis and target coupling
+        plt::clf();
 
-    std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
-    std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
+        plt::plot(fullAxis, fullWindow);
+        plt::plot(fullAxis, std::vector<double> (fullAxis.size(), env.bf.targetCoupling));
+        plt::show();
+    }
 
-    plt::plot(fullAxis, fullWindow);
-    plt::plot(fullAxis, std::vector<double> (fullAxis.size(), env.bf.targetCoupling));
-    plt::show();
+    void runScan(){
+        while (applyChoice(makeChoice())){
+            showState();
+        }
 
-    return 0;
-}
+        showFinal();
+    }
+
+    int applyChoice(int choice){
+        if(choice == -1 || env.done()){
+            return 0;
+        }
+
+        env.applyAction(choice);
+        if (choice){
+            std::cout << "Stepping forward." << std::endl;
+            stepInfo.push_back(scanCount);
+
+            scanCount = 0;
+        }
+        else{
+            scanCount++;
+        }
+
+        return 1;
+    }
+
+    int makeChoice(){
+        int choice;
+
+        #ifdef MANUAL
+            choice = queryChoice();
+        #else
+            if (env.bf.startIndex > env.bf.rewardStartIndex){
+                choice = algo.proposeAction(env.state());
+            }
+            else{
+                choice = (scanCount >= 13);
+            }
+        #endif
+
+        return choice;
+    }
+};

@@ -10,6 +10,10 @@ public:
     double threshold;
     stateClass points;
 
+    classicDynTau(){
+        
+    }
+
     classicDynTau(stateClass SNR, double target) {
         targetCoupling = target;
         
