@@ -3,7 +3,7 @@
 int main() {
     ScanRunner runner;
 
-    runner.runScan();
+    runner.runScan(2);
     runner.showFinal();
     runner.saveFinal();
 

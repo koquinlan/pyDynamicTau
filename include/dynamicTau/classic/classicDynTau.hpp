@@ -36,21 +36,35 @@ public:
     }
 
     void setPoints(stateClass& SNR){
-        double norm = SNR[SNR.size()-1];
-        points[points.size()-1] = 1;
+        /** OPTION ONE - rescaled inverse SNR **/
 
-        for(int i=SNR.size()-2; i>=0; i--){
-            points[i] = points[i+1] + SNR[i]/norm;
+        // double norm = SNR[SNR.size()-1];
+        // points[points.size()-1] = 1;
+
+        // for(int i=SNR.size()-2; i>=0; i--){
+        //     points[i] = points[i+1] + SNR[i]/norm;
+        // }
+
+        /** OPTION TWO - manually prevent back tail **/
+
+        for(int i=0; i<points.size(); i++){
+            points[i] = (i<=(points.size()-1)/2);
         }
     }
 
     void setThreshold(){
-        threshold = 0;
-        for(int i=(points.size()-1); i > (int)((points.size()-1)/2); i--){
-            threshold += points[i];
-        }
+        /** OPTION ONE - rescaled inverse SNR **/
 
-        threshold += points[0];
-        threshold += points[1];
+        // threshold = 0;
+        // for(int i=(points.size()-1); i > (int)((points.size()-1)/2); i--){
+        //     threshold += points[i];
+        // }
+
+        // threshold += points[0];
+        // threshold += points[1];
+
+        /** OPTION TWO - manually prevent back tail **/
+        
+        threshold = 2;
     }
 };

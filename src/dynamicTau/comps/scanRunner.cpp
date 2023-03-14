@@ -12,12 +12,12 @@ int ScanRunner::makeChoice(){
     #ifdef MANUAL
         choice = queryChoice();
     #else
-        if (env.bf.startIndex > env.bf.rewardStartIndex){
-        // if (0){
+        // if (env.bf.startIndex > env.bf.rewardStartIndex){
+        if (1){
             choice = algo.proposeAction(env.state());
         }
         else{
-            choice = (scanCount >= 4);
+            choice = (scanCount >= 12);
         }
     #endif
 
@@ -41,8 +41,14 @@ int ScanRunner::applyChoice(int choice){
 
     env.applyAction(choice);
     if (choice){
-        std::cout << "Stepping forward." << std::endl;
-        stepInfo.push_back(scanCount);
+        if (env.bf.startIndex > env.bf.rewardStartIndex){
+            std::cout << "Stepping forward." << std::endl;
+
+            stepInfo.push_back(scanCount);
+        }
+        else{
+            std::cout << "Smoothing start condition" << std::endl;
+        }
 
         scanCount = 0;
     }
@@ -89,7 +95,6 @@ void ScanRunner::showFinal(){
     // Print info about requested scan numbers
     std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
     std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
-    std::cout << "Average smart scans requested: " << (double)std::accumulate(stepInfo.begin() + (int)(stepInfo.size()/2), stepInfo.end(), 0)/(double)(stepInfo.size()/2) << std::endl;
     std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
 
     // Decompose full range into the reward window and corresponding x-axis
