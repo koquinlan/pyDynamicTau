@@ -25,8 +25,8 @@ void BayesFactors::init(const std::string& parametersFile){
     proc.generateLineshape(0, freqRes);
 
     // Populates the freqRange and initializes the BayesFactors and exclusion line
-    for(int i=-freqWindowSize/2; i<=freqWindowSize/2; i+=freqRes){
-        freqRange.push_back(i/1e6);
+    for(int i=-freqWindowSize; i<0; i+=freqRes){
+        freqRange.push_back(i/1e6+freqWindowSize/2e6);
         fullFreqRange.push_back(i/1e6);
 
         // Set mechanics for the Bayes factors calc
@@ -42,7 +42,7 @@ void BayesFactors::init(const std::string& parametersFile){
 
     // Determine the window over which the reward should be calculated
     double endFreq = centerFreq+scanningWindowSize;
-    rewardStartIndex = (freqRange.size()-1)/2;
+    rewardStartIndex = freqRange.size();
     rewardEndIndex = rewardStartIndex+scanningWindowSize*(1e6)/freqRes;
 }
 
