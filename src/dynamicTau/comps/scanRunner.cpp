@@ -17,7 +17,7 @@ int ScanRunner::makeChoice(){
             choice = algo.proposeAction(env.state());
         }
         else{
-            choice = (scanCount >= 3);
+            choice = (scanCount >= 4);
         }
     #endif
 
@@ -89,6 +89,7 @@ void ScanRunner::showFinal(){
     // Print info about requested scan numbers
     std::cout << "Total scans requested: " << std::accumulate(stepInfo.begin(), stepInfo.end(), 0) << std::endl;
     std::cout << "Average scans requested: " << (double)std::accumulate(stepInfo.begin(), stepInfo.end(), 0)/(double)stepInfo.size() << std::endl;
+    std::cout << "Average smart scans requested: " << (double)std::accumulate(stepInfo.begin() + (int)(stepInfo.size()/2), stepInfo.end(), 0)/(double)(stepInfo.size()/2) << std::endl;
     std::cout << "Total steps taken: " << stepInfo.size() << std::endl;
 
     // Decompose full range into the reward window and corresponding x-axis
