@@ -9,6 +9,7 @@ public:
     double targetCoupling;
     double threshold;
     stateClass points;
+    std::vector<double> targets;
 
     classicDynTau(){
         
@@ -29,7 +30,7 @@ public:
         double score = 0;
 
         for (int i=0; i < state.size(); i++){
-            if (state[i] > targetCoupling) score += points[i];
+            if (state[i] > targets[i]) score += points[i];
         }
         
         return score;
@@ -40,16 +41,28 @@ public:
 
         // double norm = SNR[SNR.size()-1];
         // points[points.size()-1] = 1;
+        // targets.push_back(targetCoupling);
 
         // for(int i=SNR.size()-2; i>=0; i--){
         //     points[i] = points[i+1] + SNR[i]/norm;
+        //     targets.push_back(targetCoupling);
         // }
 
         /** OPTION TWO - manually prevent back tail **/
 
+        // for(int i=0; i<points.size(); i++){
+        //     points[i] = (i<=(points.size()-1)/2);
+        //     targets.push_back(targetCoupling);
+        // }
+
+
+        /** OPTION THREE - On track to hit the target **/
+
         for(int i=0; i<points.size(); i++){
             points[i] = (i<=(points.size()-1)/2);
         }
+
+        double SNRsum=0;
     }
 
     void setThreshold(){
