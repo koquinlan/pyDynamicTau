@@ -58,15 +58,15 @@ public:
 
         /** OPTION THREE - On track to hit the target **/
 
-        double norm = SNR[SNR.size()-1];
-        points[points.size()-1] = 1;
+        // double norm = SNR[SNR.size()-1];
+        // points[points.size()-1] = 1;
 
-        for(int i=SNR.size()-2; i>=0; i--){
-            points[i] = points[i+1] + SNR[i]/norm;
-        }
+        // for(int i=SNR.size()-2; i>=0; i--){
+        //     points[i] = points[i+1] + SNR[i]/norm;
+        // }
 
         for(int i=0; i<points.size(); i++){
-            points[i] = (i<=(points.size()-1)/2);
+            points[i] = (i<=(points.size()-1)/1.2);
         }
 
         double SNRsum=0;
@@ -85,13 +85,13 @@ public:
     void setThreshold(){
         /** OPTION ONE - rescaled inverse SNR **/
 
-        threshold = 0;
-        for(int i=(points.size()-1); i > (int)((points.size()-1)/2.1); i--){
-            threshold += points[i];
-        }
+        // threshold = 0;
+        // for(int i=(points.size()-1); i > (int)((points.size()-1)/2.1); i--){
+        //     threshold += points[i];
+        // }
 
         /** OPTION TWO - manually prevent back tail **/
         
-        // threshold = 2;
+        threshold = 3;
     }
 };
