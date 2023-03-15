@@ -58,26 +58,40 @@ public:
 
         /** OPTION THREE - On track to hit the target **/
 
+        double norm = SNR[SNR.size()-1];
+        points[points.size()-1] = 1;
+
+        for(int i=SNR.size()-2; i>=0; i--){
+            points[i] = points[i+1] + SNR[i]/norm;
+        }
+
         for(int i=0; i<points.size(); i++){
             points[i] = (i<=(points.size()-1)/2);
         }
 
         double SNRsum=0;
+        for (int i=0; i<SNR.size(); i++){
+            SNRsum += SNR[i]*SNR[i];
+            targets.push_back(0);
+        }
+
+        double cumSum=0;
+        for (int i=targets.size()-1; i>=0; i--){
+            cumSum += SNR[i]*SNR[i];
+            targets[i] = std::sqrt(SNRsum/cumSum)*targetCoupling; 
+        }
     }
 
     void setThreshold(){
         /** OPTION ONE - rescaled inverse SNR **/
 
-        // threshold = 0;
-        // for(int i=(points.size()-1); i > (int)((points.size()-1)/2); i--){
-        //     threshold += points[i];
-        // }
-
-        // threshold += points[0];
-        // threshold += points[1];
+        threshold = 0;
+        for(int i=(points.size()-1); i > (int)((points.size()-1)/2.1); i--){
+            threshold += points[i];
+        }
 
         /** OPTION TWO - manually prevent back tail **/
         
-        threshold = 2;
+        // threshold = 2;
     }
 };

@@ -12,8 +12,8 @@ int ScanRunner::makeChoice(){
     #ifdef MANUAL
         choice = queryChoice();
     #else
-        // if (env.bf.startIndex > env.bf.rewardStartIndex){
-        if (1){
+        if (env.bf.startIndex > env.bf.rewardStartIndex/2){
+        // if (1){
             choice = algo.proposeAction(env.state());
         }
         else{
@@ -64,6 +64,8 @@ void ScanRunner::showState(int continuousPlotting){
     Feature state = env.state();
     Feature stateAxis = env.stateAxis();
 
+
+    // Get the current state (discrete maxes) and the full exclusion line in the active window
     std::vector<double> vecState(state.begin(), state.end());
     std::vector<double> vecStateAxis(stateAxis.begin(), stateAxis.end());
 
@@ -72,14 +74,19 @@ void ScanRunner::showState(int continuousPlotting){
 
     std::vector<double> SNR = env.bf.SNR;
 
+
+    // Rescale SNR to fit within the plotting window
     // double rescale = std::max_element(vecState.begin(), vecState.end())[0];
     double rescale = 0.4;
 
     for (int i = 0; i < SNR.size(); i++) SNR[i] *= rescale;
 
+
+    // Plot everything on the same axis
     plt::clf();
 
     plt::plot(activeAxis, activeWindow);
+    plt::plot(vecStateAxis, algo.targets);
     plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
     plt::plot(activeAxis, SNR);
     plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
@@ -87,6 +94,8 @@ void ScanRunner::showState(int continuousPlotting){
     plt::ylim((double)0, rescale);
     plt::title("Simulated Scanning Run");
 
+
+    // Either pause until graph is closed or continuously display
     if (continuousPlotting) plt::pause(0.0001);
     else plt::show();
 }

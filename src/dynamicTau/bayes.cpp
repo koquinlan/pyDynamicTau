@@ -396,7 +396,7 @@ Feature BayesFactors::windowAverage(const std::vector<double>& input, int output
 void BayesFactors::updateExclusionLine(combinedSpectrum combined){
     double coeffA, coeffB;
     double scanFactor, newExcludedStrength;
-    double fourLnPtOne = 9.210340372; // Numerical factor 4*ln(0.1) that goes into quadratice formula, 0.1 set by desried exclusion level (90%)
+    double fourLnPtOne = 9.210340372; // Numerical factor 4*ln(0.1) that goes into quadratic formula, 0.1 set by desried exclusion level (90%)
 
     for(int i=0; i<combined.powers.size(); i++){
         scanFactor = (1/sigmaProc)*sqrt(combined.weightSum[i]);
