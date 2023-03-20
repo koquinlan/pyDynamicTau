@@ -12,12 +12,12 @@ int ScanRunner::makeChoice(){
     #ifdef MANUAL
         choice = queryChoice();
     #else
-        if (env.bf.startIndex > env.bf.rewardStartIndex/2){
-        // if (0){
+        // if (env.bf.startIndex > env.bf.rewardStartIndex/2){
+        if (1){
             choice = algo.proposeAction(env.state());
         }
         else{
-            choice = (scanCount >= 12);
+            choice = (scanCount >= 11);
         }
     #endif
 
@@ -131,34 +131,6 @@ void ScanRunner::saveFinal(){
     std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
 
 
-    // Save final scanning result
-    std::string stateFilename = "finalState.csv";
-    std::ofstream stateFile(stateFilename);
-
-    if (!stateFile.is_open()) {
-        std::cerr << "Error: unable to open file " << stateFilename << "\n";
-        return;
-    }
-    for (size_t i = 0; i < fullAxis.size(); i++) {
-        stateFile << fullAxis[i] << "," << fullWindow[i] << "\n";
-    }
-    stateFile.close();
-
-
-    // Save scanning step information
-    std::string stepFilename = "stepInfo.csv";
-    std::ofstream stepFile(stepFilename);
-
-    if (!stepFile.is_open()) {
-        std::cerr << "Error: unable to open file " << stepFilename << "\n";
-        return;
-    }
-    for (size_t i = 0; i < stepInfo.size(); i++) {
-        stepFile << stepInfo[i] << "\n";
-    }
-    stepFile.close();
-
-
     // Create formatted name for the folder
     auto now = std::chrono::system_clock::now();
     auto now_time_t = std::chrono::system_clock::to_time_t(now);
@@ -174,11 +146,30 @@ void ScanRunner::saveFinal(){
     }
 
 
-    // Move the stored vectors to the created folder
-    if (std::filesystem::exists(folderPath)) {
-        std::filesystem::rename(stateFilename, folderName + "/" + stateFilename);
-        std::filesystem::rename(stepFilename, folderName + "/" + stepFilename);
-    } else {
-        std::cerr << "Error: unable to move files to folder\n";
+    // Save final scanning result
+    std::string stateFilename = folderName + "/finalState.csv";
+    std::ofstream stateFile(stateFilename);
+
+    if (!stateFile.is_open()) {
+        std::cerr << "Error: unable to open file " << stateFilename << "\n";
+        return;
     }
+    for (size_t i = 0; i < fullAxis.size(); i++) {
+        stateFile << fullAxis[i] << "," << fullWindow[i] << "\n";
+    }
+    stateFile.close();
+
+
+    // Save scanning step information
+    std::string stepFilename = folderName + "/stepInfo.csv";
+    std::ofstream stepFile(stepFilename);
+
+    if (!stepFile.is_open()) {
+        std::cerr << "Error: unable to open file " << stepFilename << "\n";
+        return;
+    }
+    for (size_t i = 0; i < stepInfo.size(); i++) {
+        stepFile << stepInfo[i] << "\n";
+    }
+    stepFile.close();
 }
