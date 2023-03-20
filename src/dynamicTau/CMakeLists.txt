@@ -49,5 +49,4 @@ if(MSVC)
         ${PARAMETER_FILE}
         $<TARGET_FILE_DIR:${PROJECT_NAME}Manual>
     )
-
 endif(MSVC)

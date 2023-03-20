@@ -13,7 +13,7 @@ int ScanRunner::makeChoice(){
         choice = queryChoice();
     #else
         if (env.bf.startIndex > env.bf.rewardStartIndex/2){
-        // if (1){
+        // if (0){
             choice = algo.proposeAction(env.state());
         }
         else{
@@ -41,7 +41,7 @@ int ScanRunner::applyChoice(int choice){
 
     env.applyAction(choice);
     if (choice){
-        if (env.bf.startIndex > env.bf.rewardStartIndex){
+        if (env.bf.startIndex > env.bf.rewardStartIndex/2){
             std::cout << "Stepping forward." << std::endl;
 
             stepInfo.push_back(scanCount);
@@ -82,11 +82,18 @@ void ScanRunner::showState(int continuousPlotting){
     for (int i = 0; i < SNR.size(); i++) SNR[i] *= rescale;
 
 
+    // Adjust targets to only show threshold with nonzero point value
+    std::vector<double> realTargets;
+    for (int i=0; i<algo.targets.size(); i++){
+        realTargets.push_back((algo.points[i]>0)*algo.targets[i]);
+    }
+
+
     // Plot everything on the same axis
     plt::clf();
 
     plt::plot(activeAxis, activeWindow);
-    plt::plot(vecStateAxis, algo.targets);
+    plt::plot(vecStateAxis, realTargets);
     plt::plot(activeAxis, std::vector<double> (activeAxis.size(), env.bf.targetCoupling));
     plt::plot(activeAxis, SNR);
     plt::scatter(vecStateAxis, vecState, 20, {{"color", "red"}});
