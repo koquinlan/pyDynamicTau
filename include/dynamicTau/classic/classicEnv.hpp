@@ -34,6 +34,7 @@ public:
 
 	void reset(std::string name){
 		bf.init(name);
+
 		startFreq = bf.centerFreq;
         bf.step(0);
 	}
@@ -41,15 +42,15 @@ public:
 	Feature state() const {
 		Feature output = bf.getState(0);
 
-        if (bf.rewardStartIndex > bf.startIndex){
-            Feature axis = stateAxis();
+        // if (bf.rewardStartIndex > bf.startIndex){
+        //     Feature axis = stateAxis();
 
-            int axIndex=0;
-            while(axis[axIndex] < bf.fullFreqRange[bf.rewardStartIndex]){
-                output[axIndex] = bf.targetCoupling;
-                axIndex ++;
-            }
-        }
+        //     int axIndex=0;
+        //     while(axis[axIndex] < bf.fullFreqRange[bf.rewardStartIndex]){
+        //         output[axIndex] = bf.targetCoupling;
+        //         axIndex ++;
+        //     }
+        // }
 
         return output;
 	}

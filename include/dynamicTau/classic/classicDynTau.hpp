@@ -67,7 +67,7 @@ public:
         // }
 
 
-        /** OPTION FOUR - reward for center 70% with inverse scaled SNR **/
+        /** OPTION FOUR - reward for center 70% with inverse scaled square SNR **/
         double SNRsum=0;
         double cumSum=0;
 
@@ -76,7 +76,7 @@ public:
         }
 
         int j = SNR.size()-1;
-        while(cumSum/SNRsum < 0.2){
+        while(cumSum/SNRsum < 0.3){
             cumSum += SNR[j]*SNR[j];
             points[j] = 0;
             j--;
@@ -84,7 +84,7 @@ public:
 
 
         double norm = SNR[j]*SNR[j];
-        while(cumSum/SNRsum < 0.8){
+        while(cumSum/SNRsum < 0.7){
             cumSum += SNR[j]*SNR[j];
 
             points[j] = points[j+1] + SNR[j]*SNR[j]/norm;
@@ -107,7 +107,7 @@ public:
         double cumSum=0;
         for (int i=targets.size()-1; i>=0; i--){
             cumSum += SNR[i]*SNR[i];
-            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling)/1.5 + targetCoupling; 
+            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling)/2 + targetCoupling; 
         }
     }
 
@@ -133,7 +133,7 @@ public:
             i++;
         }
 
-        threshold = points[i]/1.1;
+        threshold = points[i]/1.3;
         // threshold += points[i+1]/2;
     }
 };
