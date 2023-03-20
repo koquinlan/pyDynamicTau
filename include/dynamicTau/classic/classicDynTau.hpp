@@ -36,7 +36,7 @@ public:
         double score = 0;
 
         for (int i=0; i < state.size(); i++){
-            if (state[i] > targets[i]) score += points[i];
+            if (state[i] > targets[i]) score += points[i]*(state[i]/targets[i])*(state[i]/targets[i]);
         }
         
         return score;
@@ -76,7 +76,7 @@ public:
         }
 
         int j = SNR.size()-1;
-        while(cumSum/SNRsum < 0.15){
+        while(cumSum/SNRsum < 0.2){
             cumSum += SNR[j]*SNR[j];
             points[j] = 0;
             j--;
@@ -84,7 +84,7 @@ public:
 
 
         double norm = SNR[j]*SNR[j];
-        while(cumSum/SNRsum < 0.85){
+        while(cumSum/SNRsum < 0.8){
             cumSum += SNR[j]*SNR[j];
 
             points[j] = points[j+1] + SNR[j]*SNR[j]/norm;
@@ -107,7 +107,7 @@ public:
         double cumSum=0;
         for (int i=targets.size()-1; i>=0; i--){
             cumSum += SNR[i]*SNR[i];
-            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling)/1.3 + targetCoupling; 
+            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling)/1.5 + targetCoupling; 
         }
     }
 
@@ -133,6 +133,7 @@ public:
             i++;
         }
 
-        threshold = points[i];
+        threshold = points[i]/1.1;
+        // threshold += points[i+1]/2;
     }
 };
