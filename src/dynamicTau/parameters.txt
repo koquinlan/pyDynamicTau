@@ -1,6 +1,6 @@
 # Gain profile parameters
 maxGain=60.0
-gammaGain=0.1
+gammaGain=0.2
 
 # Axion generation parameters (freq in MHz)
 gGammaSim=0.1
@@ -11,15 +11,15 @@ axionBool=0
 sigmaProc=0.1
 nSpectra=10
 centerFreq=6999
-tuningStepFreq=0.1
-scanningWindowSize=15
+tuningStepFreq=0.025
+scanningWindowSize=5
 
 
 freqWindowSize=5000000
-freqRes=100
+freqRes=250
 
 # Reward Parameters
-targetCoupling=0.03
+targetCoupling=0.01
 
 #Tanh Reward
 peakReward=60

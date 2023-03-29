@@ -11,6 +11,18 @@ public:
     stateClass points;
     std::vector<double> targets;
 
+    double targetRescaling = 0.8;
+    double thresholdRescaling = 1.365;
+    double thresholdTarget = 2.7;
+
+    double lowerWindow = 0.4;
+    double upperWindow = 0.747;
+
+    int minScans = 0;
+    int currScans = 0;
+
+    int absMinScans = 2;
+
     classicDynTau(){
         
     }
@@ -23,20 +35,30 @@ public:
         setThreshold();
     }
 
-    int proposeAction(stateClass& state){
+    int proposeAction(stateClass& state, int scanCount){
+        if (scanCount < absMinScans){
+            return 0;
+        }
         // std::cout << checkScore(state) << " vs. " << threshold << std::endl;
 
         int action = (checkScore(state) < threshold);
         // std::cout << "Selected action: " << action << std::endl;
 
-        return action;
+        if (action){
+            currScans++; 
+        }
+        else{
+            currScans = 0;
+        }
+
+        return action && (currScans > minScans);
     }
 
     double checkScore(stateClass& state){
         double score = 0;
 
         for (int i=0; i < state.size(); i++){
-            if (state[i] > targets[i]) score += points[i]*(state[i]/targets[i])*(state[i]/targets[i]);
+            if (state[i] > targets[i]) score += points[i]*std::pow(state[i]/targets[i], 2);
         }
         
         return score;
@@ -76,15 +98,14 @@ public:
         }
 
         int j = SNR.size()-1;
-        while(cumSum/SNRsum < 0.3){
+        while(cumSum/SNRsum < lowerWindow){
             cumSum += SNR[j]*SNR[j];
             points[j] = 0;
             j--;
         }
 
-
         double norm = SNR[j]*SNR[j];
-        while(cumSum/SNRsum < 0.7){
+        while(cumSum/SNRsum < upperWindow){
             cumSum += SNR[j]*SNR[j];
 
             points[j] = points[j+1] + SNR[j]*SNR[j]/norm;
@@ -107,7 +128,13 @@ public:
         double cumSum=0;
         for (int i=targets.size()-1; i>=0; i--){
             cumSum += SNR[i]*SNR[i];
-            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling)/2 + targetCoupling; 
+            targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling);
+
+            if ((targetRescaling*std::sqrt(SNRsum/cumSum))>1){
+                targets[i] /= (targetRescaling*std::pow(SNRsum/cumSum,2));
+            }
+
+            targets[i] += targetCoupling;
         }
     }
 
@@ -133,7 +160,17 @@ public:
             i++;
         }
 
-        threshold = points[i]/1.3;
-        // threshold += points[i+1]/2;
+        int j=i;
+
+        while(points[j+1] != 0){
+            j++;
+        }        
+
+        threshold = points[i+(int)((j-i)/thresholdTarget)]/thresholdRescaling;
+
+        // i = (int)points.size()/2;
+
+        // threshold = points[i]*std::pow(((targets[i] - targetCoupling)*targetRescaling+targetCoupling)/targets[i], 1)/thresholdRescaling;
+        // // threshold += points[i+1]/2;
     }
 };
