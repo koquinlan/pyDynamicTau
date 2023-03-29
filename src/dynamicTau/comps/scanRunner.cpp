@@ -13,11 +13,11 @@ int ScanRunner::makeChoice(){
         choice = queryChoice();
     #else
         // if (env.bf.startIndex > env.bf.rewardStartIndex/2){
-        if (1){
+        if (0){
             choice = algo.proposeAction(env.state());
         }
         else{
-            choice = (scanCount >= 11);
+            choice = (scanCount >= 10);
         }
     #endif
 
@@ -147,7 +147,7 @@ void ScanRunner::saveFinal(){
 
 
     // Save final scanning result
-    std::string stateFilename = folderName + "/finalState.csv";
+    std::string stateFilename = "../" + folderName + "/finalState.csv";
     std::ofstream stateFile(stateFilename);
 
     if (!stateFile.is_open()) {
@@ -161,7 +161,7 @@ void ScanRunner::saveFinal(){
 
 
     // Save scanning step information
-    std::string stepFilename = folderName + "/stepInfo.csv";
+    std::string stepFilename = "../" + folderName + "/stepInfo.csv";
     std::ofstream stepFile(stepFilename);
 
     if (!stepFile.is_open()) {

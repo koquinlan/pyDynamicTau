@@ -12,7 +12,7 @@ sigmaProc=0.1
 nSpectra=10
 centerFreq=6999
 tuningStepFreq=0.1
-scanningWindowSize=15
+scanningWindowSize=50
 
 
 freqWindowSize=5000000
