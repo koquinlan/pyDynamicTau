@@ -1,6 +1,11 @@
 #include "dynamicTau/classic/scanRunner.hpp"
 
 void ScanRunner::runScan(int plotting){
+    if (plotting == 3){
+        manualScan();
+        return;
+    }
+
     while (applyChoice(makeChoice())){
         if (plotting) showState(plotting-1);
     }
@@ -58,6 +63,44 @@ int ScanRunner::applyChoice(int choice){
 
     return 1;
 }
+
+
+
+void ScanRunner::manualScan(){
+    std::cout << "Smoothing start condition" << std::endl;
+
+    // Quickly smooth start condition
+    while(env.bf.startIndex < env.bf.rewardStartIndex/2){
+        if(!applyChoice(makeChoice())){return;}
+    }
+
+    std::cout << "Start smoothing complete, entering manual control" << std::endl;
+
+    int checkpointNum = 1;
+    // Loop until the user chooses to exit
+    while(true){
+        std::cout << "Enter 0 to save a checkpoint, a number greater than 1 to step forward or -1 to exit: ";
+        int choice;
+        std::cin >> choice;
+
+        if(choice == -1){
+            break;
+        }
+        else if(choice == 0){
+            saveCheckpoint(checkpointNum);
+            checkpointNum++;
+        }
+        else{
+            for (int i=0; i<choice; i++){
+                if(!applyChoice(makeChoice())){return;}
+            }
+        }
+
+        showState(0);
+    }
+}
+
+
 
 void ScanRunner::showState(int continuousPlotting){
     // std::cout << "Current score: " << algo.checkScore(env.state()) << " vs. threshold " << algo.threshold << std::endl;
@@ -128,7 +171,7 @@ void ScanRunner::showFinal(){
 void ScanRunner::saveFinal(){
     // Create directory to save info
     std::string foldername = "scanningRun";
-    help.createFolder(foldername);
+    foldername = help.createFolder(foldername);
 
 
     // Decompose full range into the reward window and corresponding x-axis
@@ -145,9 +188,9 @@ void ScanRunner::saveFinal(){
 void ScanRunner::saveCheckpoint(int checkpointNum){
     // Create folder to store data
     HelperUtil help;
-    std::string foldername = "checkpoint" + checkpointNum;
+    std::string foldername = "checkpoint";
 
-    help.createFolder(foldername);
+    foldername = help.createFolder(foldername);
 
 
     // Get and save SNR vector

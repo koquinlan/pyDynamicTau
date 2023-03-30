@@ -26,7 +26,7 @@ public:
 
     ClassicEnvDynTau env;
     classicDynTau<Feature> algo;
-    
+
     HelperUtil help;
 
     std::vector<int> stepInfo;
@@ -39,6 +39,7 @@ public:
         algo = classicDynTau<Feature>(SNRinit, env.bf.targetCoupling);
     }
 
+    void manualScan();
     void runScan(int plotting = 2);
 
     int makeChoice();
