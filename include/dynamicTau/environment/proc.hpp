@@ -9,6 +9,8 @@
 #include <algorithm>
 
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 
 #include "decs.hpp"
 
@@ -45,7 +47,6 @@ class Processor {
 public:
 
     std::vector<double> lineshapeWeights;
-
     void generateLineshape(int lineshapeType, int freqRes);
 
     std::vector<Spectrum> simulateRaw(std::vector<double> freqRange, int numSpectra, double centerFreq, 
@@ -53,13 +54,17 @@ public:
                                       double gammaGain, double maxGain, double sigmaProc); 
 
     std::vector<Spectrum> rawToProcessed(std::vector<Spectrum> rawSpectra);
-
     std::vector<Spectrum> processedToRescaled(std::vector<Spectrum> processedSpectra);
 
     combinedSpectrum combinedToGrand(combinedSpectrum combined, int rebinWidth);
-
     std::vector<double> grandToBayes(combinedSpectrum grand, double axionMean);
+
+    void outputVector(std::vector<double> v, std::string name, int precision);
+    void outputVector(std::vector<Spectrum> v, std::string name, int precision);
+    void outputVector(std::vector<combinedSpectrum> v, std::string name, int precision);
 
 private:
     double stdev(std::vector<double> v);
+
+
 };

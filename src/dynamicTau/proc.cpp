@@ -244,3 +244,48 @@ double Processor::stdev(std::vector<double> v){
 
     return stdev;
 }
+
+
+
+void outputVector(std::vector<double> v, std::string name, int precision=9){
+    std::ofstream myfile;
+
+    myfile.open(name);
+    myfile << std::setprecision(precision) << v[0];
+    for(int i=1; i<v.size(); i++){
+        myfile << std::setprecision(precision) << ',' << v[i];
+    }
+    myfile.close();
+}
+
+
+
+void outputVector(std::vector<Spectrum> v, std::string name, int precision=9){
+    std::ofstream myfile;
+
+    myfile.open(name);
+    for(int i=0; i<v.size(); i++){
+        myfile << std::setprecision(precision) << v[i].powers[0];
+        for(int j=1; j<v[i].powers.size(); j++){
+            myfile << std::setprecision(precision) << ',' << v[i].powers[j];
+        }
+        myfile << '\n';
+    }
+    myfile.close();
+}
+
+
+
+void outputVector(std::vector<combinedSpectrum> v, std::string name, int precision=9){
+    std::ofstream myfile;
+
+    myfile.open(name);
+    for(int i=0; i<v.size(); i++){
+        myfile << std::setprecision(precision) << v[i].powers[0];
+        for(int j=1; j<v[i].powers.size(); j++){
+            myfile << std::setprecision(precision) << ',' << v[i].powers[j];
+        }
+        myfile << '\n';
+    }
+    myfile.close();
+}

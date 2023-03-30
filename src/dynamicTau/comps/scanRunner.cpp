@@ -13,7 +13,7 @@ int ScanRunner::makeChoice(){
         choice = queryChoice();
     #else
         // if (env.bf.startIndex > env.bf.rewardStartIndex/2){
-        if (0){
+        if (1){
             choice = algo.proposeAction(env.state(), scanCount);
         }
         else{
