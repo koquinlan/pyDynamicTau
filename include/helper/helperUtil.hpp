@@ -14,7 +14,7 @@
 class HelperUtil {
 
 public:
-    void createFolder(std::string name, int appendTime=1){
+    std::string createFolder(std::string name, int appendTime=1){
         std::string folderPath = "../" + name;
 
         if (appendTime){folderPath += "_" + getTime();}
@@ -23,6 +23,8 @@ public:
         if (!std::filesystem::create_directory(folderPath)) {
             std::cerr << "Error: unable to create folder " << folderPath << "\n";
         }
+
+        return folderPath;
     }
 
     std::string getTime(){
@@ -36,8 +38,8 @@ public:
     }
 
     template <class State>
-    void saveState(State state, std::string filename = "default", std::string foldername = ""){
-        std::string fullname = "../" + foldername + "/" + filename + ".csv";
+    void saveState(State state, std::string filename = "default", std::string foldername = "../"){
+        std::string fullname = foldername + "/" + filename + ".csv";
         std::ofstream file(fullname);
 
         if (!file.is_open()) {
@@ -62,7 +64,7 @@ public:
 
     template <class State>
     void saveState(State state1, State state2, std::string filename = "default", std::string foldername = ""){
-        std::string fullname = "../" + foldername + "/" + filename + ".csv";
+        std::string fullname = foldername + "/" + filename + ".csv";
         std::ofstream file(fullname);
 
         if (!file.is_open()) {
