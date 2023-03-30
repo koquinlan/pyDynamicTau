@@ -247,7 +247,7 @@ double Processor::stdev(std::vector<double> v){
 
 
 
-void outputVector(std::vector<double> v, std::string name, int precision=9){
+void Processor::outputVector(std::vector<double> v, std::string name, int precision=9){
     std::ofstream myfile;
 
     myfile.open(name);
@@ -260,7 +260,7 @@ void outputVector(std::vector<double> v, std::string name, int precision=9){
 
 
 
-void outputVector(std::vector<Spectrum> v, std::string name, int precision=9){
+void Processor::outputVector(std::vector<Spectrum> v, std::string name, int precision=9){
     std::ofstream myfile;
 
     myfile.open(name);
@@ -276,7 +276,7 @@ void outputVector(std::vector<Spectrum> v, std::string name, int precision=9){
 
 
 
-void outputVector(std::vector<combinedSpectrum> v, std::string name, int precision=9){
+void Processor::outputVector(std::vector<combinedSpectrum> v, std::string name, int precision=9){
     std::ofstream myfile;
 
     myfile.open(name);
