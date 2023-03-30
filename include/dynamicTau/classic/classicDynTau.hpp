@@ -130,9 +130,11 @@ public:
             cumSum += SNR[i]*SNR[i];
             targets[i] = (std::sqrt(SNRsum/cumSum)*targetCoupling - targetCoupling);
 
-            if ((targetRescaling*std::sqrt(SNRsum/cumSum))>1){
-                targets[i] /= (targetRescaling*std::pow(SNRsum/cumSum,2));
-            }
+            // if ((targetRescaling*std::sqrt(SNRsum/cumSum))>1){
+            //     targets[i] /= (targetRescaling*std::pow(SNRsum/cumSum,2));
+            // }
+            
+            targets[i] /= targetRescaling;
 
             targets[i] += targetCoupling;
         }
