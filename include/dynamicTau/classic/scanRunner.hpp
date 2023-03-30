@@ -18,6 +18,7 @@ namespace plt = matplotlibcpp;
 #include "dynamicTau/environment/bayes.hpp"
 #include "dynamicTau/classic/classicEnv.hpp"
 #include "dynamicTau/classic/classicDynTau.hpp"
+#include "helper/helperUtil.hpp"
 
 class ScanRunner {
 
@@ -25,6 +26,8 @@ public:
 
     ClassicEnvDynTau env;
     classicDynTau<Feature> algo;
+    
+    HelperUtil help;
 
     std::vector<int> stepInfo;
     int scanCount=0;
@@ -45,5 +48,6 @@ public:
     void showState(int continuousPlotting = 1);
     void showFinal();
 
+    void saveCheckpoint(int checkpointNum = 1);
     void saveFinal();
 };

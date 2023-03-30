@@ -126,50 +126,55 @@ void ScanRunner::showFinal(){
 }
 
 void ScanRunner::saveFinal(){
+    // Create directory to save info
+    std::string foldername = "scanningRun";
+    help.createFolder(foldername);
+
+
     // Decompose full range into the reward window and corresponding x-axis
     std::vector<double> fullWindow(env.bf.exclusionLine.begin()+env.bf.rewardStartIndex, env.bf.exclusionLine.begin()+env.bf.rewardEndIndex);
     std::vector<double> fullAxis(env.bf.fullFreqRange.begin()+env.bf.rewardStartIndex, env.bf.fullFreqRange.begin()+env.bf.rewardEndIndex);
 
-
-    // Create formatted name for the folder
-    auto now = std::chrono::system_clock::now();
-    auto now_time_t = std::chrono::system_clock::to_time_t(now);
-    std::stringstream ss;
-    ss << "scanningRun_" << std::put_time(std::localtime(&now_time_t), "%Y-%m-%d_%H-%M-%S");
-    std::string folderName = ss.str();
-    std::string folderPath = "../" + folderName;
-
-    // Create folder to store info
-    if (!std::filesystem::create_directory(folderPath)) {
-        std::cerr << "Error: unable to create folder " << folderPath << "\n";
-        return;
-    }
+    help.saveState(fullAxis, fullWindow, "finalState", foldername);
 
 
-    // Save final scanning result
-    std::string stateFilename = "../" + folderName + "/finalState.csv";
-    std::ofstream stateFile(stateFilename);
+    // Save stepInfo
+    help.saveState(stepInfo, "stepInfo", foldername);
+}
 
-    if (!stateFile.is_open()) {
-        std::cerr << "Error: unable to open file " << stateFilename << "\n";
-        return;
-    }
-    for (size_t i = 0; i < fullAxis.size(); i++) {
-        stateFile << fullAxis[i] << "," << fullWindow[i] << "\n";
-    }
-    stateFile.close();
+void ScanRunner::saveCheckpoint(int checkpointNum){
+    // Create folder to store data
+    HelperUtil help;
+    std::string foldername = "checkpoint" + checkpointNum;
+
+    help.createFolder(foldername);
 
 
-    // Save scanning step information
-    std::string stepFilename = "../" + folderName + "/stepInfo.csv";
-    std::ofstream stepFile(stepFilename);
+    // Get and save SNR vector
+    Feature stateSNR = env.bf.windowAverage(env.bf.SNR, env.state().size());
+    std::vector<double> fullSNR = env.bf.SNR;
 
-    if (!stepFile.is_open()) {
-        std::cerr << "Error: unable to open file " << stepFilename << "\n";
-        return;
-    }
-    for (size_t i = 0; i < stepInfo.size(); i++) {
-        stepFile << stepInfo[i] << "\n";
-    }
-    stepFile.close();
+    help.saveState(stateSNR, "stateSNR", foldername);
+    help.saveState(fullSNR, "fullSNR", foldername);
+
+
+    // Get and save current state observation vector
+    Feature state = env.state();
+    Feature stateAxis = env.stateAxis();
+
+    help.saveState(state, "state", foldername);
+    help.saveState(stateAxis, "stateAxis", foldername);
+
+
+    // Get and save full range
+    std::vector<double> activeWindow(env.bf.exclusionLine.begin()+env.bf.startIndex, env.bf.exclusionLine.end());
+    std::vector<double> activeAxis(env.bf.fullFreqRange.begin()+env.bf.startIndex, env.bf.fullFreqRange.end());
+
+    help.saveState(activeAxis, "fullAxis", foldername);
+    help.saveState(activeWindow, "fullState", foldername);
+
+
+    // Get and save information about the algorithm
+    help.saveState(algo.points, "points", foldername);
+    help.saveState(algo.targets, "targets", foldername);
 }
